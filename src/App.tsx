@@ -20,6 +20,11 @@ import MediaPage from "./pages/Media";
 import MediaWatchPage from "./pages/MediaWatch";
 import AdminLogin from "./pages/admin/Login";
 import AdminDashboard from "./pages/admin/Dashboard";
+import AdminProjects from "./pages/admin/Projects";
+import AdminAddProject from "./pages/admin/AddProject";
+import AdminEditProject from "./pages/admin/EditProject";
+import ProjectsPage from "./pages/Projects";
+import ProjectDetailsPage from "./pages/ProjectDetails";
 import AdminProperties from "./pages/admin/Properties";
 import AdminAddProperty from "./pages/admin/AddProperty";
 import AdminBlogs from "./pages/admin/Blogs";
@@ -86,6 +91,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<BlogDetailsPage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/projects/:slug" element={<ProjectDetailsPage />} />
             <Route path="/properties" element={<PropertiesPage />} />
             <Route path="/rentals" element={<RentalsPage />} />
             <Route path="/properties/:id" element={<PropertyDetailsPage />} />
@@ -94,6 +101,9 @@ const App = () => (
 
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/projects" element={<ProtectedRoute><AdminProjects /></ProtectedRoute>} />
+            <Route path="/admin/add-project" element={<ProtectedRoute><AdminAddProject /></ProtectedRoute>} />
+            <Route path="/admin/edit-project/:id" element={<ProtectedRoute><AdminEditProject /></ProtectedRoute>} />
             <Route
               path="/admin/dashboard"
               element={

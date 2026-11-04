@@ -6,6 +6,7 @@ import {
   Users,
   MessageSquare,
   Settings,
+  FolderKanban,
   FileText,
   Menu,
   X,
@@ -20,6 +21,7 @@ import { useState } from 'react';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+  { name: 'Projects', href: '/admin/projects', icon: FolderKanban },
   { name: 'Sales', href: '/admin/properties', icon: Building2 },
   { name: 'Add Property', href: '/admin/add-property', icon: PlusCircle },
   { name: 'Add Rental', href: '/admin/add-property?mode=rent', icon: Home },

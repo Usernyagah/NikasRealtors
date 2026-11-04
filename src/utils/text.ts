@@ -46,3 +46,18 @@ export const descriptionToLines = (description: string): string[] => {
   const paragraphs = descriptionToParagraphs(description);
   return paragraphs.filter(Boolean);
 };
+
+/**
+ * Convert string to a clean URL-friendly slug.
+ */
+export const slugify = (text: string): string => {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-') // Replace spaces with -
+    .replace(/[^\w-]+/g, '') // Remove all non-word chars
+    .replace(/--+/g, '-') // Replace multiple - with single -
+    .replace(/^-+/, '') // Trim - from start of text
+    .replace(/-+$/, ''); // Trim - from end of text
+};

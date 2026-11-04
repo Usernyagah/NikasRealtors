@@ -134,9 +134,9 @@ const AdminAddProject = () => {
   ]);
 
   // Contact
-  const [contactPhone, setContactPhone] = useState("+254 700 000 000");
-  const [contactEmail, setContactEmail] = useState("info@nikasrealtor.com");
-  const [contactWhatsApp, setContactWhatsApp] = useState("+254 700 000 000");
+  const [contactPhone, setContactPhone] = useState("+254710132320");
+  const [contactEmail, setContactEmail] = useState("nikasrealty@gmail.com");
+  const [contactWhatsApp, setContactWhatsApp] = useState("+254710132320");
 
   // SEO Settings
   const [seoTitle, setSeoTitle] = useState("");

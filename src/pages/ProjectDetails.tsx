@@ -128,7 +128,7 @@ export const ProjectDetailsPage = () => {
 
   const handleWhatsAppClick = () => {
     if (!project) return;
-    const phone = (project.contactWhatsApp || "+254700000000").replace(/[^0-9]/g, "");
+    const phone = (project.contactWhatsApp || "254710132320").replace(/[^0-9]/g, "");
     const msg = encodeURIComponent(
       `Hello Nikas Realty, I am interested in ${project.name} in ${project.location}. Please share more details and available units.`
     );
@@ -391,7 +391,7 @@ export const ProjectDetailsPage = () => {
                       <MessageCircle className="h-4 w-4 fill-current" /> Inquire via WhatsApp
                     </Button>
                     <a
-                      href={`tel:${project.contactPhone || "+254700000000"}`}
+                      href={`tel:${project.contactPhone || "+254710132320"}`}
                       className="w-full inline-flex items-center justify-center gap-2 h-10 px-4 rounded-md border border-input bg-background hover:bg-accent text-sm font-medium"
                     >
                       <Phone className="h-4 w-4 text-primary" /> Call Sales Team

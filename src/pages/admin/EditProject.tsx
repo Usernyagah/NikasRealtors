@@ -155,9 +155,9 @@ const AdminEditProject = () => {
 
         setConfigurations(p.configurations || []);
 
-        setContactPhone(p.contactPhone || "+254 700 000 000");
-        setContactEmail(p.contactEmail || "info@nikasrealtor.com");
-        setContactWhatsApp(p.contactWhatsApp || "+254 700 000 000");
+        setContactPhone(p.contactPhone || "+254710132320");
+        setContactEmail(p.contactEmail || "nikasrealty@gmail.com");
+        setContactWhatsApp(p.contactWhatsApp || "+254710132320");
 
         if (p.seo) {
           setSeoTitle(p.seo.seoTitle || "");

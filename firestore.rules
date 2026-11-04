@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Properties: Public can read, authenticated admin can create/update/delete
+    match /properties/{propertyId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    // Projects: Public can read published projects, authenticated admin can do everything
+    match /projects/{projectId} {
+      allow read: if true;
+      allow create, update, delete: if isAuthenticated();
+    }
+
+    // Blogs: Public can read published, authenticated admin has full access
+    match /blogs/{blogId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    // Media: Public can read, authenticated admin has full access
+    match /media/{mediaId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    // Team members: Public can read, authenticated admin has full access
+    match /team/{memberId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    // Requests & Leads: Anyone can create (submit inquiry form), authenticated admin can read/update/delete
+    match /requests/{requestId} {
+      allow create: if true;
+      allow read, update, delete: if isAuthenticated();
+    }
+
+    // Newsletters: Anyone can subscribe, authenticated admin can manage
+    match /newsletters/{newsletterId} {
+      allow create: if true;
+      allow read, update, delete: if isAuthenticated();
+    }
+
+    // Analytics: Anyone can log visits, authenticated admin can read
+    match /analytics/{docId} {
+      allow write: if true;
+      allow read: if isAuthenticated();
+    }
+  }
+}

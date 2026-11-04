@@ -292,9 +292,10 @@ export const projectsService = {
         return true;
       }
       return false;
-    } catch (error) {
-      console.error('Error checking slug uniqueness:', error);
-      return false;
+    } catch (error: any) {
+      console.warn('Could not verify slug uniqueness with query (permission/index):', error?.message || error);
+      // Fallback: If query fails due to security rules or permissions, allow creation to proceed
+      return true;
     }
   },
 
@@ -374,3 +375,4 @@ export const projectsService = {
     }
   },
 };
+

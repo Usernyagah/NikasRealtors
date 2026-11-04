@@ -57,3 +57,4 @@ export const SearchSnippetPreview = ({ title, url, description }: SearchSnippetP
 };
 
 export default SearchSnippetPreview;
+

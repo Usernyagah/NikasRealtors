@@ -34,21 +34,26 @@ import { toast } from "sonner";
 import { slugify } from "@/utils/text";
 
 const COMMON_AMENITIES = [
-  "Swimming Pool",
+  "Outdoor Swimming Pool",
   "Fully Equipped Gym",
-  "High Speed Elevators",
-  "Borehole Water Supply",
-  "Full Backup Generator",
-  "CCTV Surveillance & 24/7 Security",
+  "Sauna & Steam Room",
+  "Yoga Room",
   "Children's Play Area",
-  "Rooftop Terrace / Lounge",
-  "Ample Secure Parking",
-  "Intercom System",
+  "Private Cinema Room",
+  "Games Room",
+  "Cafeteria & Restaurant",
+  "Library",
+  "Health Centre for owners",
+  "Mini Golf Course",
+  "Tennis Court & Badminton Court",
+  "BBQ Area",
+  "Borehole Water",
+  "Backup Generator",
+  "High Speed Lifts",
+  "CCTV & 24/7 Security",
+  "Smart Home Automation",
   "Solar Water Heating",
-  "Landscaped Gardens",
-  "Clubhouse",
-  "Sauna & Steam Bath",
-  "Electric Fence",
+  "Top-Notch Luxury Finishes",
 ];
 
 const AdminEditProject = () => {

@@ -453,8 +453,7 @@ export const ProjectDetailsPage = () => {
                         >
                           <div className="flex items-center justify-between">
                             <span className="font-bold text-foreground text-base">
-                              {config.bedrooms ? `${config.bedrooms} Bedroom ` : ""}
-                              {config.propertyType || "Unit"}
+                              {config.unitName || (config.bedrooms === 0 ? "Studio" : `${config.bedrooms} Bedroom ${config.propertyType || ""}`)}
                             </span>
                             <Badge
                               variant={config.availabilityStatus === "Available" ? "default" : "secondary"}
@@ -466,21 +465,28 @@ export const ProjectDetailsPage = () => {
 
                           <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground pt-1">
                             <span className="flex items-center gap-1">
-                              <Bed className="h-3.5 w-3.5 text-primary" /> {config.bedrooms} Beds
+                              <Bed className="h-3.5 w-3.5 text-primary" /> {config.bedrooms === 0 ? "Studio" : `${config.bedrooms} Beds`}
                             </span>
                             <span className="flex items-center gap-1">
                               <Bath className="h-3.5 w-3.5 text-primary" /> {config.bathrooms} Baths
                             </span>
                             <span className="flex items-center gap-1">
-                              <Maximize className="h-3.5 w-3.5 text-primary" /> {config.floorAreaSqFt} sq ft
+                              <Maximize className="h-3.5 w-3.5 text-primary" /> {config.floorAreaSqM ? `${config.floorAreaSqM} m²` : `${config.floorAreaSqFt} sq ft`}
                             </span>
                           </div>
 
                           <div className="pt-2 border-t border-border/40 flex items-center justify-between">
-                            <span className="text-xs text-muted-foreground">Starting from</span>
-                            <span className="font-extrabold text-foreground text-sm sm:text-base">
-                              {formatPrice(config.startingPrice)}
-                            </span>
+                            <span className="text-xs text-muted-foreground">From</span>
+                            <div className="text-right">
+                              <span className="font-extrabold text-foreground text-sm sm:text-base block">
+                                {formatPrice(config.startingPrice)}
+                              </span>
+                              {config.priceUSD && (
+                                <span className="text-[11px] text-muted-foreground block">
+                                  ~ USD ${Number(config.priceUSD).toLocaleString()}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       );

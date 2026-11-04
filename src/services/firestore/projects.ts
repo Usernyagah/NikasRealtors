@@ -17,11 +17,14 @@ const COLLECTION_NAME = 'projects';
 
 export interface ApartmentConfiguration {
   id: string;
-  propertyType: string; // e.g. Apartment, Penthouse, Studio, Duplex
+  unitName?: string; // e.g. "Studio (48 sqm)", "2 Bedroom (85 sqm)"
+  propertyType: string; // e.g. Studio, Apartment, Penthouse, Duplex, Villa
   bedrooms: number;
   bathrooms: number;
-  floorAreaSqFt: number;
-  startingPrice: number;
+  floorAreaSqM?: number; // Size in square meters (sqm)
+  floorAreaSqFt: number; // Size in square feet
+  startingPrice: number; // In KES
+  priceUSD?: number; // In USD
   maxPrice?: number;
   availabilityStatus: 'Available' | 'Sold Out' | 'Reserved';
   floorPlanImage?: string;

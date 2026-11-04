@@ -78,10 +78,12 @@ const About = () => {
               <img
                 src={aboutImage}
                 alt="Professional Real Estate Consultation"
-                className="w-full h-full min-h-[420px] md:min-h-[520px] object-cover object-center"
+                className="w-full h-full object-cover"
                 loading="lazy"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-secondary/80 to-transparent" />
             </div>
+
             <div className="absolute -bottom-6 -right-6 w-72 h-72 gradient-gold opacity-20 rounded-full blur-3xl -z-10" />
           </div>
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Building2, Award, Users, TrendingUp } from "lucide-react";
-import aboutImage from "@/assets/images/about-page.png";
+import aboutImage from "@/assets/images/about-page.jpg";
 import { teamService, type TeamMember as DBTeamMember } from "@/services/firestore/team";
 import NewsletterSubscribe from "@/components/NewsletterSubscribe";
 
@@ -78,10 +78,9 @@ const About = () => {
               <img
                 src={aboutImage}
                 alt="Professional Real Estate Consultation"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-top"
                 loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-secondary/80 to-transparent" />
             </div>
 
             <div className="absolute -bottom-6 -right-6 w-72 h-72 gradient-gold opacity-20 rounded-full blur-3xl -z-10" />

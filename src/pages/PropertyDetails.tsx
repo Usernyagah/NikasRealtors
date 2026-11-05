@@ -380,12 +380,6 @@ const PropertyDetailsPage = () => {
                   {property.availableUnits.title || 'Available Units & Prices'}
                 </h2>
 
-                {property.availableUnits.introduction?.trim() && (
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {property.availableUnits.introduction}
-                  </p>
-                )}
-
                 <div className="space-y-5">
                   {property.availableUnits.categories.map((cat, catIndex) => (
                     cat.units.length > 0 && (

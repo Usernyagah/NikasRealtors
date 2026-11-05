@@ -13,7 +13,7 @@ interface AvailableUnitsBuilderProps {
 }
 
 const AvailableUnitsBuilder = ({ value, onChange }: AvailableUnitsBuilderProps) => {
-  const section = value.categories.length > 0 || value.introduction || value.title
+  const section = value.categories.length > 0 || value.title
     ? value
     : createEmptyAvailableUnits();
 
@@ -104,17 +104,6 @@ const AvailableUnitsBuilder = ({ value, onChange }: AvailableUnitsBuilderProps) 
             value={section.title ?? ''}
             onChange={(e) => updateSection({ title: e.target.value })}
             placeholder="Available Units & Prices"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="unitsIntro">Introduction (Optional)</Label>
-          <Textarea
-            id="unitsIntro"
-            rows={3}
-            value={section.introduction ?? ''}
-            onChange={(e) => updateSection({ introduction: e.target.value })}
-            placeholder="Optional introduction about the available units..."
           />
         </div>
 

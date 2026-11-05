@@ -15,7 +15,6 @@ export interface PropertyExtendedFormData {
 
 export const createEmptyAvailableUnits = (): AvailableUnitsSection => ({
   title: 'Available Units & Prices',
-  introduction: '',
   closingParagraph: '',
   categories: [],
 });
@@ -53,9 +52,6 @@ export const buildExtendedPropertyFields = (form: PropertyExtendedFormData) => {
   if (hasUnits) {
     fields.availableUnits = {
       title: sanitizeText(form.availableUnits.title?.trim() || 'Available Units & Prices'),
-      introduction: form.availableUnits.introduction?.trim()
-        ? sanitizeText(form.availableUnits.introduction)
-        : undefined,
       closingParagraph: form.availableUnits.closingParagraph?.trim()
         ? sanitizeText(form.availableUnits.closingParagraph)
         : undefined,

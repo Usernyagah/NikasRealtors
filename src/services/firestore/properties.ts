@@ -27,7 +27,6 @@ export interface AvailableUnitCategory {
 
 export interface AvailableUnitsSection {
   title?: string;
-  introduction?: string;
   closingParagraph?: string;
   categories: AvailableUnitCategory[];
 }

@@ -106,6 +106,25 @@ export const generateSensibleSEO = (project: Partial<Project>): { title: string;
   return { title, description, canonical };
 };
 
+// Clean undefined fields recursively so Firestore never throws 'Unsupported field value: undefined'
+const sanitizeForFirestore = (obj: any): any => {
+  if (obj === null || obj === undefined) return null;
+  if (Array.isArray(obj)) {
+    return obj.map(item => sanitizeForFirestore(item));
+  }
+  if (typeof obj === 'object' && !(obj instanceof Timestamp) && !(obj instanceof Date)) {
+    const cleaned: any = {};
+    for (const key of Object.keys(obj)) {
+      const val = obj[key];
+      if (val !== undefined) {
+        cleaned[key] = sanitizeForFirestore(val);
+      }
+    }
+    return cleaned;
+  }
+  return obj;
+};
+
 export const projectsService = {
   // Get all projects with optional filters (for admin)
   async getAll(filters?: {
@@ -319,7 +338,8 @@ export const projectsService = {
         publishedAt: status === 'published' ? Timestamp.now() : null,
       };
 
-      const docRef = await addDoc(collection(db, COLLECTION_NAME), projectData);
+      const cleanedData = sanitizeForFirestore(projectData);
+      const docRef = await addDoc(collection(db, COLLECTION_NAME), cleanedData);
       return { id: docRef.id, ...projectData };
     } catch (error) {
       console.error('Error creating project:', error);
@@ -353,7 +373,8 @@ export const projectsService = {
         }
       }
 
-      await updateDoc(docRef, updateData);
+      const cleanedUpdate = sanitizeForFirestore(updateData);
+      await updateDoc(docRef, cleanedUpdate);
       return await this.getById(id);
     } catch (error) {
       console.error('Error updating project:', error);

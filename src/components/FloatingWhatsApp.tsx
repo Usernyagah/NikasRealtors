@@ -17,11 +17,14 @@ const FloatingWhatsApp = () => {
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
+  const handleWhatsAppClick = () => {
+    const message = encodeURIComponent("Hello, I'm interested in a property I saw on the Nikas Realty website.");
+    window.open(`https://wa.me/254710132320?text=${message}`, '_blank');
+  };
+
   return (
-    <a
-      href="https://wa.me/254710132320"
-      target="_blank"
-      rel="noopener noreferrer"
+    <button
+      onClick={handleWhatsAppClick}
       className={`fixed bottom-8 right-8 z-50 transition-smooth ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"
       }`}
@@ -41,7 +44,7 @@ const FloatingWhatsApp = () => {
           <div className="absolute top-full right-6 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-secondary" />
         </div>
       </div>
-    </a>
+    </button>
   );
 };
 

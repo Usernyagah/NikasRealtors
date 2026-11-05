@@ -130,7 +130,7 @@ export const ProjectDetailsPage = () => {
     if (!project) return;
     const phone = (project.contactWhatsApp || "254710132320").replace(/[^0-9]/g, "");
     const msg = encodeURIComponent(
-      `Hello Nikas Realty, I am interested in ${project.name} in ${project.location}. Please share more details and available units.`
+      `Hello Nikas Realty, I am interested in ${project.name} in ${project.location} (seen on your website). Please share more details and available units.`
     );
     window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
   };
@@ -471,7 +471,7 @@ export const ProjectDetailsPage = () => {
                               <Bath className="h-3.5 w-3.5 text-primary" /> {config.bathrooms} Baths
                             </span>
                             <span className="flex items-center gap-1">
-                              <Maximize className="h-3.5 w-3.5 text-primary" /> {config.floorAreaSqM ? `${config.floorAreaSqM} m²` : `${config.floorAreaSqFt} sq ft`}
+                              <Maximize className="h-3.5 w-3.5 text-primary" /> {config.floorAreaSqM ? `${config.floorAreaSqM} mï¿½` : `${config.floorAreaSqFt} sq ft`}
                             </span>
                           </div>
 

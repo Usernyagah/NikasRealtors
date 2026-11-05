@@ -74,7 +74,10 @@ const Hero = () => {
               <ArrowRight className="ml-2" size={20} />
             </Button>
             <Button
-              onClick={() => window.open("https://wa.me/254710132320", "_blank")}
+              onClick={() => {
+                const message = encodeURIComponent("Hello, I'm interested in your properties I saw on the Nikas Realty website.");
+                window.open(`https://wa.me/254710132320?text=${message}`, "_blank");
+              }}
               size="lg"
               variant="outline"
               className="!text-white border-white hover:bg-white hover:!text-secondary font-semibold text-lg px-8 py-6 backdrop-blur-sm transition-smooth bg-transparent"

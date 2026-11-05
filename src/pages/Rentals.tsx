@@ -10,7 +10,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Bed, Bath, Square, Loader2 } from "lucide-react";
+import { MapPin, Bed, Bath, Square, Loader2, Search, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import {
@@ -65,10 +65,24 @@ const RentalsPage = () => {
         fetchRentals();
     }, []);
 
+    const hasActiveFilters = search || bedrooms !== "all" || propertyType !== "all" ||
+        location !== "all" || priceRange[0] > 0 || priceRange[1] < 200000;
+
+    const clearFilters = () => {
+        setSearch("");
+        setBedrooms("all");
+        setPropertyType("all");
+        setLocation("all");
+        setPriceRange([0, 200000]);
+        setSortBy("newest");
+    };
+
     const filteredRentals = allRentals.filter((p) => {
-        const matchesSearch =
-            p.title?.toLowerCase().includes(search.toLowerCase()) ||
-            p.location?.toLowerCase().includes(search.toLowerCase());
+        const searchLower = search.toLowerCase().trim();
+        const matchesSearch = !searchLower ||
+            (p.title?.toLowerCase().includes(searchLower) ?? false) ||
+            (p.location?.toLowerCase().includes(searchLower) ?? false) ||
+            (p.description?.toLowerCase().includes(searchLower) ?? false);
         const matchesBedrooms = bedrooms === "all" ? true : String(p.bedrooms) === bedrooms;
         const matchesType = propertyType === "all" ? true : p.type === propertyType;
         const matchesLocation = location === "all"
@@ -137,11 +151,15 @@ const RentalsPage = () => {
                     {/* Search and Filter */}
                     <div className="flex flex-wrap gap-4 mb-10 items-end">
                         <div className="flex-1 min-w-[200px]">
-                            <Input
-                                placeholder="Search by title or location..."
-                                value={search}
-                                onChange={e => setSearch(e.target.value)}
-                            />
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                    placeholder="Search by title, location or description..."
+                                    value={search}
+                                    onChange={e => setSearch(e.target.value)}
+                                    className="pl-10"
+                                />
+                            </div>
                         </div>
                         <div className="min-w-[160px]">
                             <Select value={propertyType} onValueChange={setPropertyType}>
@@ -213,6 +231,17 @@ const RentalsPage = () => {
                                 </SelectContent>
                             </Select>
                         </div>
+                        {hasActiveFilters && (
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={clearFilters}
+                                className="gap-1 text-sm"
+                            >
+                                <X className="h-4 w-4" />
+                                Clear Filters
+                            </Button>
+                        )}
                     </div>
 
                     {/* Results count */}

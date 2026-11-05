@@ -260,12 +260,24 @@ export const propertiesService = {
 
     // Apply search filter
     if (filters?.search) {
-      const searchLower = filters.search.toLowerCase();
-      filtered = filtered.filter(p =>
-        p.title?.toLowerCase().includes(searchLower) ||
-        p.location?.toLowerCase().includes(searchLower) ||
-        p.description?.toLowerCase().includes(searchLower)
-      );
+      const searchLower = filters.search.toLowerCase().trim();
+      const searchTerms = searchLower.split(/\s+/).filter(term => term.length > 0);
+
+      filtered = filtered.filter(p => {
+        // Search in multiple fields
+        const searchableText = [
+          p.title,
+          p.location,
+          p.description,
+          p.type,
+          p.status,
+          p.amenities?.join(' '),
+          p.features?.join(' ')
+        ].join(' ').toLowerCase();
+
+        // All search terms must be present (AND logic)
+        return searchTerms.every(term => searchableText.includes(term));
+      });
     }
 
     // Apply location filter

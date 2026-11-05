@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Bed, Bath, Square, Loader2 } from "lucide-react";
+import { MapPin, Bed, Bath, Square, Loader2, Search, X } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import {
@@ -62,10 +62,39 @@ const Properties = ({ headingAsPage = false }: { headingAsPage?: boolean }) => {
     fetchAll();
   }, []);
 
+  const hasActiveFilters = search || bedrooms !== "all" || propertyType !== "all" || status !== "all" ||
+    location !== "all" || completion !== "all" || featuredOnly ||
+    priceRange[0] > PROPERTY_CONFIG.defaultPriceRange[0] || priceRange[1] < PROPERTY_CONFIG.defaultPriceRange[1];
+
+  const clearFilters = () => {
+    setSearch("");
+    setBedrooms("all");
+    setFeaturedOnly(false);
+    setPropertyType("all");
+    setStatus("all");
+    setLocation("all");
+    setCompletion("all");
+    setPriceRange(PROPERTY_CONFIG.defaultPriceRange);
+    setSortBy("newest");
+  };
+
   const filteredProperties = allProperties.filter((p) => {
-    const matchesSearch =
-      p.title?.toLowerCase().includes(search.toLowerCase()) ||
-      p.location?.toLowerCase().includes(search.toLowerCase());
+    // Improved search: search across multiple fields with multi-term support
+    const searchLower = search.toLowerCase().trim();
+    const searchTerms = searchLower.split(/\s+/).filter(term => term.length > 0);
+    const matchesSearch = searchTerms.length === 0 || (() => {
+      const searchableText = [
+        p.title,
+        p.location,
+        p.description,
+        p.type,
+        p.status,
+        p.amenities?.join(' '),
+        p.features?.join(' ')
+      ].join(' ').toLowerCase();
+      return searchTerms.every(term => searchableText.includes(term));
+    })();
+
     const matchesBedrooms = bedrooms === "all" ? true : String(p.bedrooms) === bedrooms;
     const matchesFeatured = featuredOnly ? p.featured : true;
     const matchesType = propertyType === "all" ? true : p.type === propertyType;
@@ -84,8 +113,6 @@ const Properties = ({ headingAsPage = false }: { headingAsPage?: boolean }) => {
     const priceNum = typeof p.price === "number" ? p.price : parsePrice(String(p.price));
     const matchesPrice = priceNum >= priceRange[0] && priceNum <= priceRange[1];
 
-    // Price filter check (silent)
-
     const matches = (
       matchesSearch &&
       matchesBedrooms &&
@@ -96,8 +123,6 @@ const Properties = ({ headingAsPage = false }: { headingAsPage?: boolean }) => {
       matchesCompletion &&
       matchesPrice
     );
-
-    // Property filter check (silent)
 
     return matches;
   });
@@ -145,12 +170,15 @@ const Properties = ({ headingAsPage = false }: { headingAsPage?: boolean }) => {
         {/* Search and Filter Row */}
         <div className="flex flex-wrap gap-4 mb-10 items-end">
           <div className="flex-1 min-w-[200px]">
-            <Input
-              placeholder="Search by title or location..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className=""
-            />
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by title, location or description..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="pl-10"
+              />
+            </div>
           </div>
           <div className="min-w-[160px]">
             <Select value={propertyType} onValueChange={setPropertyType}>
@@ -253,6 +281,17 @@ const Properties = ({ headingAsPage = false }: { headingAsPage?: boolean }) => {
             />
             <span>Featured only</span>
           </label>
+          {hasActiveFilters && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={clearFilters}
+              className="gap-1 text-sm"
+            >
+              <X className="h-4 w-4" />
+              Clear Filters
+            </Button>
+          )}
         </div>
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
@@ -278,8 +317,14 @@ const Properties = ({ headingAsPage = false }: { headingAsPage?: boolean }) => {
               <Loader2 className="h-10 w-10 animate-spin text-primary" />
             </div>
           ) : sortedProperties.length === 0 ? (
-            <div className="col-span-full text-center text-muted-foreground py-8 text-lg">
-              No properties match your search.
+            <div className="col-span-full text-center text-muted-foreground py-8 text-lg space-y-3">
+              <p>No properties match your search.</p>
+              {hasActiveFilters && (
+                <Button variant="outline" onClick={clearFilters} className="gap-2">
+                  <X className="h-4 w-4" />
+                  Clear All Filters
+                </Button>
+              )}
             </div>
           ) : (
             sortedProperties.map((property) => {

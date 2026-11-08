@@ -99,9 +99,9 @@ export const generateSensibleSEO = (project: Partial<Project>): { title: string;
     ? (shortDesc.length > 155 ? `${shortDesc.slice(0, 152)}...` : shortDesc)
     : `Explore ${name} by ${project.developer || 'Nikas Realty'} in ${location}. Premium apartment units available${startingPrice}. View pricing, floor plans, and amenities.`;
 
-  const canonical = project.slug 
-    ? `https://www.nikasrealtor.com/projects/${project.slug}`
-    : 'https://www.nikasrealtor.com/projects';
+  const canonical = project.slug
+    ? `https://www.nikasrealtors.com/projects/${project.slug}`
+    : 'https://www.nikasrealtors.com/projects';
 
   return { title, description, canonical };
 };

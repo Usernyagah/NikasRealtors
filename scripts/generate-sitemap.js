@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
 const sitemapPath = path.join(rootDir, 'public', 'sitemap.xml');
-const SITE_URL = 'https://www.nikasrealtor.com';
+const SITE_URL = 'https://www.nikasrealtors.com';
 
 export function updateSitemapWithProjects(projects = []) {
   try {

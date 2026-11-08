@@ -110,7 +110,7 @@ export const ProjectDetailsPage = () => {
       await requestsService.create({
         type: "project-inquiry",
         name: inquiryName.trim(),
-        email: inquiryEmail.trim() || "no-email@nikasrealtor.com",
+        email: inquiryEmail.trim() || "no-email@nikasrealtors.com",
         phone: inquiryPhone.trim(),
         message: `Project Inquiry: ${project.name}\nUnit of Interest: ${selectedUnitType || "General"}\nMessage: ${inquiryMessage}`,
         propertyId: project.id,

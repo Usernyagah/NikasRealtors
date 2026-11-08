@@ -1,6 +1,6 @@
 import { APP_CONFIG } from "@/config/constants";
 
-export const SITE_URL = "https://www.nikasrealtor.com";
+export const SITE_URL = "https://www.nikasrealtors.com";
 
 export const SEO_DEFAULTS = {
   siteName: "Nikas Realty",
@@ -8,7 +8,7 @@ export const SEO_DEFAULTS = {
   description:
     "Find apartments, houses, maisonettes and luxury homes for sale and rent in Nairobi, Kenya. Browse listings in Westlands, Kilimani, Kileleshwa, Langata, Syokimau and more with Nikas Realty.",
   keywords:
-    "apartments for sale Kenya, apartments for rent Nairobi, houses for sale Nairobi, properties for sale Kenya, luxury homes Nairobi, real estate Kenya, Westlands apartments, Kilimani apartments, Kileleshwa homes, Langata houses, Syokimau apartments, Nikas Realty, nikasrealtor",
+    "apartments for sale Kenya, apartments for rent Nairobi, houses for sale Nairobi, properties for sale Kenya, luxury homes Nairobi, real estate Kenya, Westlands apartments, Kilimani apartments, Kileleshwa homes, Langata houses, Syokimau apartments, Nikas Realty, nikasrealtors",
   image: `${SITE_URL}/logo.png`,
   locale: "en_KE",
 } as const;
@@ -22,7 +22,7 @@ export const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": ["RealEstateAgent", "LocalBusiness", "Organization"],
   name: "Nikas Realty",
-  alternateName: ["Nikas Realty Kenya", "nikasrealtor"],
+  alternateName: ["Nikas Realty Kenya", "nikasrealtors"],
   url: SITE_URL,
   logo: `${SITE_URL}/logo.png`,
   image: `${SITE_URL}/logo.png`,

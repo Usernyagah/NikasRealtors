@@ -128,7 +128,7 @@ const RentalsPage = () => {
                     name: "Apartments and houses for rent in Kenya",
                     description:
                         "Find apartments and houses for rent in Nairobi, Kenya.",
-                    url: "https://www.nikasrealtor.com/rentals",
+                    url: "https://www.nikasrealtors.com/rentals",
                 }}
             />
             <Navbar />

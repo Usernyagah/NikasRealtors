@@ -75,11 +75,11 @@ export const ProjectsPage = () => {
     "@type": "CollectionPage",
     name: "Real Estate Development Projects in Kenya | Nikas Realty",
     description: "Browse high-end new developments, off-plan residential apartments, and luxury gated communities in Nairobi.",
-    url: "https://www.nikasrealtor.com/projects",
+    url: "https://www.nikasrealtors.com/projects",
     hasPart: projects.map((p) => ({
       "@type": "RealEstateListing",
       name: p.name,
-      url: `https://www.nikasrealtor.com/projects/${p.slug}`,
+      url: `https://www.nikasrealtors.com/projects/${p.slug}`,
       image: p.featuredImage || p.gallery?.[0],
     })),
   };

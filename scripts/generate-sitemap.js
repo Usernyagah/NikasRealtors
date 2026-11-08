@@ -11,16 +11,9 @@ const SITE_URL = 'https://nikasrealtors.com';
 
 export async function generateSitemap() {
   try {
-    // Import services dynamically
-    const { projectsService } = await import('../src/services/firestore/projects.js');
-    const { propertiesService } = await import('../src/services/firestore/properties.js');
-
-    // Fetch all data from Firestore
-    const [projects, properties] = await Promise.all([
-      projectsService.getAll().catch(() => []),
-      propertiesService.getAll().catch(() => []),
-    ]);
-
+    // For now, generate static sitemap without Firestore data
+    // This can be enhanced later to fetch from Firestore if needed during build
+    
     // Base static URLs
     const baseUrls = [
       { loc: `${SITE_URL}/`, priority: '1.0', freq: 'daily', lastmod: new Date().toISOString().split('T')[0] },
@@ -33,37 +26,7 @@ export async function generateSitemap() {
       { loc: `${SITE_URL}/contact`, priority: '0.5', freq: 'monthly', lastmod: new Date().toISOString().split('T')[0] },
     ];
 
-    // Append published projects
-    const projectUrls = projects
-      .filter((p) => p.status === 'published' && p.slug && p.seo?.searchEngineIndexing !== 'noindex')
-      .map((p) => ({
-        loc: `${SITE_URL}/projects/${p.slug}`,
-        priority: '0.8',
-        freq: 'weekly',
-        lastmod: p.updatedAt ? new Date(p.updatedAt).toISOString().split('T')[0] : p.createdAt ? new Date(p.createdAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-      }));
-
-    // Append properties (sales)
-    const propertyUrls = properties
-      .filter((p) => p.id && (p.status === 'for-sale' || p.status === 'For Sale') && p.seo?.searchEngineIndexing !== 'noindex')
-      .map((p) => ({
-        loc: `${SITE_URL}/properties/${p.id}`,
-        priority: '0.8',
-        freq: 'weekly',
-        lastmod: p.updatedAt ? new Date(p.updatedAt).toISOString().split('T')[0] : p.createdAt ? new Date(p.createdAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-      }));
-
-    // Append rentals
-    const rentalUrls = properties
-      .filter((p) => p.id && (p.status === 'for-rent' || p.status === 'For Rent') && p.seo?.searchEngineIndexing !== 'noindex')
-      .map((p) => ({
-        loc: `${SITE_URL}/properties/${p.id}`,
-        priority: '0.8',
-        freq: 'weekly',
-        lastmod: p.updatedAt ? new Date(p.updatedAt).toISOString().split('T')[0] : p.createdAt ? new Date(p.createdAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-      }));
-
-    const allEntries = [...baseUrls, ...projectUrls, ...propertyUrls, ...rentalUrls];
+    const allEntries = [...baseUrls];
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
     xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
@@ -82,11 +45,8 @@ export async function generateSitemap() {
     xml += `</urlset>\n`;
 
     fs.writeFileSync(sitemapPath, xml, 'utf8');
-    console.log(`✅ Updated sitemap.xml with ${allEntries.length} indexable URLs:`);
-    console.log(`   - ${baseUrls.length} static pages`);
-    console.log(`   - ${projectUrls.length} project pages`);
-    console.log(`   - ${propertyUrls.length} property listings`);
-    console.log(`   - ${rentalUrls.length} rental listings`);
+    console.log(`✅ Updated sitemap.xml with ${allEntries.length} indexable URLs (static pages only).`);
+    console.log(`⚠️  To include dynamic properties/projects, run the sitemap generation after building the app or implement a server-side solution.`);
   } catch (err) {
     console.error('Error generating sitemap:', err);
     throw err;

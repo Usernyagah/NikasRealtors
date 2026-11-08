@@ -170,40 +170,119 @@ const PropertyDetailsPage = () => {
   })();
 
   const listingDescription = seoDescription;
+
+  // Parse size for structured data
+  const parseSizeForSchema = (sizeStr?: string) => {
+    if (!sizeStr) return undefined;
+    const size = sizeStr.trim();
+    const lower = size.toLowerCase();
+    const sqmMatch = size.match(/(\d+(?:\.\d+)?)\s*(?:sqm|sq\.?\s*m|m²)/i);
+    const sqftMatch = size.match(/(\d+(?:\.\d+)?)\s*(?:sqft|sq\.?\s*ft|ft²)/i);
+    if (sqmMatch) {
+      return {
+        "@type": "QuantitativeValue",
+        value: parseFloat(sqmMatch[1]),
+        unitCode: "MTK",
+        unitText: "square meters"
+      };
+    }
+    if (sqftMatch) {
+      return {
+        "@type": "QuantitativeValue",
+        value: parseFloat(sqftMatch[1]),
+        unitCode: "FTK",
+        unitText: "square feet"
+      };
+    }
+    return undefined;
+  };
+
+  const propertyTypeMapping: Record<string, string> = {
+    "Apartment": "Apartment",
+    "Mansion": "House",
+    "Maisonette": "House",
+    "Townhouse": "Townhouse",
+    "Bungalow": "House",
+    "Duplex": "Duplex",
+    "Triplex": "Triplex",
+  };
+
+  const schemaType = propertyTypeMapping[property.type] || "Residence";
+
   const listingJsonLd = {
     "@context": "https://schema.org",
-    "@type": "RealEstateListing",
+    "@type": schemaType,
     name: property.title,
     description: listingDescription,
     url: absoluteUrl(`/properties/${property.id || id}`),
-    image: listingImage,
+    image: images.length > 0 ? images.map(img => img.startsWith("http") ? img : absoluteUrl(img)) : [listingImage],
     datePosted: property.createdAt ? new Date(property.createdAt).toISOString() : undefined,
+    dateModified: property.updatedAt ? new Date(property.updatedAt).toISOString() : undefined,
     address: {
       "@type": "PostalAddress",
       addressLocality: property.location,
-      addressCountry: "KE",
+      addressRegion: "Nairobi",
+      addressCountry: {
+        "@type": "Country",
+        name: "Kenya"
+      }
     },
     numberOfRooms: property.bedrooms,
-    floorSize: property.size
-      ? {
-          "@type": "QuantitativeValue",
-          name: property.size,
-        }
-      : undefined,
+    numberOfBedrooms: property.bedrooms,
+    numberOfBathroomsTotal: property.bathrooms,
+    floorSize: parseSizeForSchema(property.size),
+    accommodationCategory: property.type,
+    occupancy: {
+      "@type": "Occupancy",
+      maxOccupancy: property.bedrooms ? property.bedrooms * 2 : undefined
+    },
     offers: {
       "@type": "Offer",
-      price: priceNum || undefined,
+      price: priceNum ? priceNum.toString() : undefined,
       priceCurrency: "KES",
-      availability: "https://schema.org/InStock",
+      availability: property.status === "sold" || property.status === "Sold"
+        ? "https://schema.org/SoldOut"
+        : "https://schema.org/InStock",
       businessFunction: isRental
         ? "https://schema.org/LeaseOut"
         : "https://schema.org/Sell",
+      seller: {
+        "@type": "RealEstateAgent",
+        name: "Nikas Realty",
+        telephone: "+254710132320",
+        email: "nikasrealty@gmail.com",
+        url: SITE_URL,
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "Westland Arcade",
+          addressLocality: "Westlands",
+          addressRegion: "Nairobi",
+          addressCountry: "KE"
+        }
+      },
+      itemOffered: {
+        "@type": schemaType,
+        name: property.title,
+        description: listingDescription,
+        image: images.length > 0 ? images.map(img => img.startsWith("http") ? img : absoluteUrl(img)) : [listingImage],
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: property.location,
+          addressRegion: "Nairobi",
+          addressCountry: {
+            "@type": "Country",
+            name: "Kenya"
+          }
+        }
+      }
     },
-    seller: {
-      "@type": "RealEstateAgent",
-      name: "Nikas Realty",
-      url: SITE_URL,
-    },
+    additionalProperty: amenities.length > 0 ? amenities.map(amenity => ({
+      "@type": "PropertyValue",
+      name: amenity,
+      value: "true"
+    })) : undefined,
+    keywords: amenities.join(", "),
+    inLanguage: "en-KE"
   };
 
   return (

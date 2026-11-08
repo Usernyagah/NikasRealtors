@@ -16,7 +16,40 @@
       "destination": "/index.html"
     }
   ],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.nikasrealtors.com"
+        }
+      ],
+      "destination": "https://nikasrealtors.com/:path*",
+      "statusCode": 301
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "nikasrealtor.com"
+        }
+      ],
+      "destination": "https://nikasrealtors.com/:path*",
+      "statusCode": 301
+    }
+  ],
   "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains"
+        }
+      ]
+    },
     {
       "source": "/favicon.ico",
       "headers": [

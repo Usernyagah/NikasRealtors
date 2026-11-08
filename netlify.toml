@@ -1,7 +1,38 @@
+# Force HTTPS and redirect www to non-www
+[[redirects]]
+  from = "https://www.nikasrealtors.com/*"
+  to = "https://nikasrealtors.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://nikasrealtor.com/*"
+  to = "https://nikasrealtors.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://nikasrealtors.com/*"
+  to = "https://nikasrealtors.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.nikasrealtors.com/*"
+  to = "https://nikasrealtors.com/:splat"
+  status = 301
+  force = true
+
+# SPA fallback
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
 
 [[headers]]
   for = "/assets/*.css"

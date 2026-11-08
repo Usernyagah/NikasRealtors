@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/
 
-Sitemap: https://www.nikasrealtors.com/sitemap.xml
+Sitemap: https://nikasrealtors.com/sitemap.xml

@@ -13,7 +13,7 @@ export const SearchSnippetPreview = ({ title, url, description }: SearchSnippetP
   const displayDesc = description ? (description.length > 158 ? `${description.slice(0, 155)}...` : description) : "Meta description preview will appear here as users would see it in Google search results.";
   
   // Format URL cleanly like Google does
-  let formattedUrl = url || "https://www.nikasrealtors.com/projects/example-project";
+  let formattedUrl = url || "https://nikasrealtors.com/projects/example-project";
   let breadcrumb = "nikasrealtors.com › projects";
   try {
     const parsed = new URL(formattedUrl);

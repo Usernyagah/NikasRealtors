@@ -156,9 +156,20 @@ const PropertyDetailsPage = () => {
   const listingImage = displayImages[0]?.startsWith("http")
     ? displayImages[0]
     : absoluteUrl(displayImages[0] || "/logo.png");
-  const listingDescription =
-    (property.description || "").replace(/\s+/g, " ").trim().slice(0, 155) ||
-    `${property.title} — ${property.type} ${isRental ? "for rent" : "for sale"} in ${property.location}, Kenya.`;
+
+  // Enhanced SEO title with location, type, and Nairobi/Kenya
+  const seoTitle = `${property.title} - ${property.type} ${isRental ? "for rent" : "for sale"} in ${property.location}, Nairobi, Kenya | Nikas Realty`;
+
+  // Enhanced meta description with key details (150-160 characters)
+  const seoDescription = (() => {
+    const bedrooms = property.bedrooms ? `${property.bedrooms} bedroom${property.bedrooms > 1 ? 's' : ''}` : '';
+    const price = priceNum ? `KES ${priceNum.toLocaleString()}` : '';
+    const details = [bedrooms, price].filter(Boolean).join(', ');
+    const baseDesc = (property.description || "").replace(/\s+/g, " ").trim().slice(0, 100);
+    return `${property.title} in ${property.location}${details ? ` (${details})` : ''}. ${baseDesc} Browse with Nikas Realty.`.slice(0, 160);
+  })();
+
+  const listingDescription = seoDescription;
   const listingJsonLd = {
     "@context": "https://schema.org",
     "@type": "RealEstateListing",
@@ -198,8 +209,8 @@ const PropertyDetailsPage = () => {
   return (
     <div className="min-h-screen">
       <SEO
-        title={`${property.title} in ${property.location} | ${isRental ? "For Rent" : "For Sale"} | Nikas Realty`}
-        description={listingDescription}
+        title={seoTitle}
+        description={seoDescription}
         path={`/properties/${property.id || id}`}
         image={listingImage}
         jsonLd={listingJsonLd}
@@ -229,7 +240,7 @@ const PropertyDetailsPage = () => {
         >
           <img
             src={displayImages[selectedImage]}
-            alt={property.title}
+            alt={`${property.title} - ${property.type} in ${property.location}, Nairobi, Kenya`}
             className="w-full h-full object-contain"
             onError={handleImageError}
           />
@@ -302,7 +313,7 @@ const PropertyDetailsPage = () => {
                     >
                       <img
                         src={thumbnailImages[index]}
-                        alt={`${property.title} - ${index + 1}`}
+                        alt={`${property.title} gallery image ${index + 1} - ${property.type} in ${property.location}, Nairobi`}
                         className="w-full h-full object-cover"
                         onError={handleImageError}
                       />
@@ -531,7 +542,7 @@ const PropertyDetailsPage = () => {
             <div className="relative max-w-4xl w-full max-h-[90vh] flex items-center justify-center">
               <img
                 src={displayImages[selectedImage]}
-                alt={`${property.title} - ${selectedImage + 1}`}
+                alt={`${property.title} full view - ${property.type} in ${property.location}, Nairobi, Kenya`}
                 className="max-h-[90vh] max-w-full object-contain"
                 onClick={(e) => e.stopPropagation()}
                 onError={handleImageError}

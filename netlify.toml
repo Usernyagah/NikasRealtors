@@ -35,6 +35,16 @@
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
 
 [[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+[[headers]]
   for = "/assets/*.css"
   [headers.values]
     Cache-Control = "public, max-age=3600, must-revalidate"

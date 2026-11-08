@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "CHOKIDAR_USEPOLLING=1 CHOKIDAR_INTERVAL=200 vite",
-    "build": "vite build && node scripts/copy-verification.js",
-    "build:prod": "vite build --mode production && node scripts/copy-verification.js",
+    "build": "vite build && node scripts/copy-verification.js && node scripts/generate-sitemap.js",
+    "build:prod": "vite build --mode production && node scripts/copy-verification.js && node scripts/generate-sitemap.js",
     "build:dev": "vite build --mode development",
+    "generate-sitemap": "node scripts/generate-sitemap.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },

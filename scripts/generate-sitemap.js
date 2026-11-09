@@ -23,6 +23,7 @@ export async function generateSitemap() {
       { loc: `${SITE_URL}/blog`, priority: '0.7', freq: 'weekly', lastmod: new Date().toISOString().split('T')[0] },
       { loc: `${SITE_URL}/media`, priority: '0.6', freq: 'weekly', lastmod: new Date().toISOString().split('T')[0] },
       { loc: `${SITE_URL}/about`, priority: '0.5', freq: 'monthly', lastmod: new Date().toISOString().split('T')[0] },
+      { loc: `${SITE_URL}/services`, priority: '0.5', freq: 'monthly', lastmod: new Date().toISOString().split('T')[0] },
       { loc: `${SITE_URL}/contact`, priority: '0.5', freq: 'monthly', lastmod: new Date().toISOString().split('T')[0] },
     ];
 

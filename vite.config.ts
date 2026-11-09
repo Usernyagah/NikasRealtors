@@ -41,7 +41,7 @@ export default defineConfig(({ mode }) => ({
     cssCodeSplit: true,
     cssMinify: true,
     minify: 'esbuild',
-    sourcemap: true, // Enable source maps for debugging
+    sourcemap: mode === "development",
     rollupOptions: {
       output: {
         // Add hash to CSS files for cache busting

@@ -23,6 +23,36 @@
   status = 301
   force = true
 
+[[redirects]]
+  from = "/about-us"
+  to = "/about"
+  status = 301
+
+[[redirects]]
+  from = "/contact-us"
+  to = "/contact"
+  status = 301
+
+[[redirects]]
+  from = "/listings"
+  to = "/properties"
+  status = 301
+
+[[redirects]]
+  from = "/for-sale"
+  to = "/properties"
+  status = 301
+
+[[redirects]]
+  from = "/for-rent"
+  to = "/rentals"
+  status = 301
+
+[[redirects]]
+  from = "/home"
+  to = "/"
+  status = 301
+
 # SPA fallback
 [[redirects]]
   from = "/*"

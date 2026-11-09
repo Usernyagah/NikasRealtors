@@ -32,14 +32,14 @@ const Navbar = () => {
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "About Us", href: "/#about" },
+    { name: "About Us", href: "/about" },
     { name: "Sales", href: "/#sales" },
     { name: "Projects", href: "/projects" },
     { name: "Rentals", href: "/rentals" },
-    { name: "Services", href: "/#services" },
+    { name: "Services", href: "/services" },
     { name: "Media", href: "/media" },
     { name: "Blog", href: "/blog" },
-    { name: "Contact", href: "/#contact" },
+    { name: "Contact", href: "/contact" },
   ];
 
   const handleNavClick = (href: string) => {

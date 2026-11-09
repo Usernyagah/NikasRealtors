@@ -19,6 +19,13 @@ const destFile = path.join(scriptsDir, 'verify-theme.js');
 fs.copyFileSync(sourceFile, destFile);
 console.log('✅ Theme verification script copied to build directory');
 
+const appleTouch = path.join(__dirname, '..', 'public', 'favicon', 'apple-touch-icon.png');
+if (fs.existsSync(appleTouch) && fs.existsSync(buildDir)) {
+  fs.copyFileSync(appleTouch, path.join(buildDir, 'apple-touch-icon.png'));
+  fs.copyFileSync(appleTouch, path.join(buildDir, 'apple-touch-icon-precomposed.png'));
+  console.log('✅ Copied apple-touch-icon files to build root');
+}
+
 // Also add it to the index.html
 const indexPath = path.join(buildDir, 'index.html');
 if (fs.existsSync(indexPath)) {

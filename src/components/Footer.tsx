@@ -6,13 +6,13 @@ import NewsletterSubscribe from "@/components/NewsletterSubscribe";
 const Footer = () => {
   const quickLinks = [
     { name: "Home", href: "/" },
-    { name: "About Us", href: "/#about" },
+    { name: "About Us", href: "/about" },
     { name: "Properties for Sale", href: "/properties" },
     { name: "Apartments for Rent", href: "/rentals" },
-    { name: "Services", href: "/#services" },
+    { name: "Services", href: "/services" },
     { name: "Media", href: "/media" },
     { name: "Blog", href: "/blog" },
-    { name: "Contact", href: "/#contact" },
+    { name: "Contact", href: "/contact" },
   ];
 
   const socialLinks = [

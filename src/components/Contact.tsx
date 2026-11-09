@@ -8,7 +8,8 @@ import { toast } from "sonner";
 import { sanitizeText, sanitizeEmail, sanitizePhone } from "@/utils/sanitize";
 import { validateName, validateEmail, validatePhone, validateMessage } from "@/utils/validate";
 
-const Contact = () => {
+const Contact = ({ headingAsPage = false }: { headingAsPage?: boolean }) => {
+  const HeadingTag = headingAsPage ? "h1" : "h2";
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -119,13 +120,13 @@ const Contact = () => {
   ];
 
   return (
-    <section id="contact" className="py-20 lg:py-32 bg-muted/30">
+    <section id="contact" className={`py-20 lg:py-32 bg-muted/30 ${headingAsPage ? "pt-32 lg:pt-40" : ""}`}>
       <div className="container mx-auto px-4 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground">
+          <HeadingTag className="text-4xl md:text-5xl font-bold text-foreground">
             Let's Talk <span className="text-primary">Real Estate</span>
-          </h2>
+          </HeadingTag>
           <div className="h-1 w-20 gradient-gold mx-auto" />
           <p className="text-lg text-muted-foreground">
             Get in touch with our team to discuss your property needs

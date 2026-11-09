@@ -18,6 +18,36 @@
   ],
   "redirects": [
     {
+      "source": "/about-us",
+      "destination": "/about",
+      "statusCode": 301
+    },
+    {
+      "source": "/contact-us",
+      "destination": "/contact",
+      "statusCode": 301
+    },
+    {
+      "source": "/listings",
+      "destination": "/properties",
+      "statusCode": 301
+    },
+    {
+      "source": "/for-sale",
+      "destination": "/properties",
+      "statusCode": 301
+    },
+    {
+      "source": "/for-rent",
+      "destination": "/rentals",
+      "statusCode": 301
+    },
+    {
+      "source": "/home",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
       "source": "/:path*",
       "has": [
         {

@@ -4,7 +4,8 @@ import aboutImage from "@/assets/images/about-page.jpg";
 import { teamService, type TeamMember as DBTeamMember } from "@/services/firestore/team";
 import NewsletterSubscribe from "@/components/NewsletterSubscribe";
 
-const About = () => {
+const About = ({ headingAsPage = false }: { headingAsPage?: boolean }) => {
+  const HeadingTag = headingAsPage ? "h1" : "h2";
   const [dynamicMembers, setDynamicMembers] = useState<DBTeamMember[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -70,7 +71,7 @@ const About = () => {
   ];
 
   return (
-    <section id="about" className="py-20 lg:py-32 bg-background">
+    <section id="about" className={`py-20 lg:py-32 bg-background ${headingAsPage ? "pt-32 lg:pt-40" : ""}`}>
       <div className="container mx-auto px-4 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="relative order-2 lg:order-1">
@@ -88,10 +89,10 @@ const About = () => {
 
           <div className="space-y-8 order-1 lg:order-2">
             <div className="space-y-4">
-              <h2 className="text-4xl md:text-5xl font-bold text-foreground">
+              <HeadingTag className="text-4xl md:text-5xl font-bold text-foreground">
                 Building Dreams,{" "}
                 <span className="text-primary">One Home at a Time</span>
-              </h2>
+              </HeadingTag>
               <div className="h-1 w-20 gradient-gold" />
             </div>
 

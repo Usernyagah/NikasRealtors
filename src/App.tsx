@@ -10,6 +10,9 @@ import CookieConsent from "@/components/CookieConsent";
 import { useEffect } from "react";
 import { initGA, logPageView } from "@/lib/analytics";
 import Index from "./pages/Index";
+import AboutPage from "./pages/About";
+import ContactPage from "./pages/Contact";
+import ServicesPage from "./pages/Services";
 import NotFound from "./pages/NotFound";
 import Blog from "./pages/Blog";
 import BlogDetailsPage from "./pages/BlogDetails";
@@ -89,6 +92,9 @@ const App = () => (
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Index />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/services" element={<ServicesPage />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<BlogDetailsPage />} />
             <Route path="/projects" element={<ProjectsPage />} />

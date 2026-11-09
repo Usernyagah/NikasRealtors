@@ -1,6 +1,7 @@
 import { Home, TrendingUp, FileText, Scale, CreditCard } from "lucide-react";
 
-const Services = () => {
+const Services = ({ headingAsPage = false }: { headingAsPage?: boolean }) => {
+  const HeadingTag = headingAsPage ? "h1" : "h2";
   const services = [
     {
       icon: Home,
@@ -30,14 +31,14 @@ const Services = () => {
   ];
 
   return (
-    <section id="services" className="py-20 lg:py-32 bg-background">
+    <section id="services" className={`py-20 lg:py-32 bg-background ${headingAsPage ? "pt-32 lg:pt-40" : ""}`}>
       <div className="container mx-auto px-4 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground">
+          <HeadingTag className="text-4xl md:text-5xl font-bold text-foreground">
             Professional Advice &{" "}
             <span className="text-primary">Customized Solutions</span>
-          </h2>
+          </HeadingTag>
           <div className="h-1 w-20 gradient-gold mx-auto" />
           <p className="text-lg text-muted-foreground">
             Comprehensive real estate services tailored to your unique needs

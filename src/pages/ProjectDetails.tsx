@@ -15,6 +15,7 @@ import {
   Bed,
   Bath,
   Maximize,
+  Calendar,
   Layers,
   Phone,
   Mail,
@@ -272,41 +273,39 @@ export const ProjectDetailsPage = () => {
 
         {/* Project Gallery */}
         <section className="container mx-auto px-4 lg:px-8 pt-8 pb-6">
-          <div className="relative h-[42vh] min-h-[280px] md:h-[58vh] overflow-hidden border border-border bg-muted">
+          <div className="relative mb-8 h-[50vh] min-h-[320px] w-full cursor-zoom-in overflow-hidden rounded-xl bg-muted shadow-lg md:h-[60vh] lg:h-[65vh]">
             <img
               src={selectedImage || project.featuredImage || "/placeholder.svg"}
               alt={`${project.name} - Residential development in ${project.location}`}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain"
             />
-          </div>
-
-          <div className="border-b border-border py-5 md:py-6">
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-              <div className="space-y-2">
-                <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                  <span className="border border-border px-2.5 py-1">{project.constructionStatus || "New Development"}</span>
-                  {project.expectedCompletionDate && (
-                    <span className="border border-border px-2.5 py-1">Completion {project.expectedCompletionDate}</span>
-                  )}
-                  {project.developer && <span>{project.developer}</span>}
-                </div>
-                <h1 className="text-2xl font-semibold text-foreground md:text-3xl">{project.name}</h1>
-                <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <MapPin className="h-4 w-4" />
-                  {project.neighborhood ? `${project.neighborhood}, ` : ""}
-                  {project.location}, {project.country || "Kenya"}
-                </p>
+            <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 md:p-8 lg:p-10">
+              <div className="mb-3 flex flex-wrap gap-2">
+                <Badge className="gradient-gold text-secondary font-semibold">
+                  {project.constructionStatus || "New Development"}
+                </Badge>
+                {project.expectedCompletionDate && (
+                  <Badge variant="secondary" className="bg-white/90 text-foreground">
+                    Completion {project.expectedCompletionDate}
+                  </Badge>
+                )}
+                {project.developer && (
+                  <Badge variant="secondary" className="bg-white/90 text-foreground">
+                    {project.developer}
+                  </Badge>
+                )}
               </div>
-
-              <div className="md:text-right">
-                <span className="block text-xs text-muted-foreground">Starting from</span>
-                <span className="text-2xl font-semibold text-foreground">{formatPrice(project.startingPrice)}</span>
-              </div>
+              <h1 className="mb-2 text-3xl font-bold text-white md:text-4xl">{project.name}</h1>
+              <p className="flex items-center gap-1.5 text-sm text-white/90">
+                <MapPin className="h-4 w-4" />
+                {project.neighborhood ? `${project.neighborhood}, ` : ""}
+                {project.location}, {project.country || "Kenya"}
+              </p>
             </div>
           </div>
 
           {allImages.length > 1 && (
-            <div className="space-y-3 pt-5">
+            <div className="space-y-3">
               <h2 className="text-sm font-medium text-foreground">Gallery</h2>
               <div className="grid grid-cols-4 gap-2 sm:grid-cols-5 md:grid-cols-6">
                 {allImages.map((img, idx) => (
@@ -316,8 +315,8 @@ export const ProjectDetailsPage = () => {
                     onClick={() => setSelectedImage(img)}
                     aria-label={`View ${project.name} image ${idx + 1}`}
                     aria-pressed={selectedImage === img}
-                    className={`aspect-square overflow-hidden border ${
-                      selectedImage === img ? "border-primary" : "border-border opacity-75 hover:opacity-100"
+                    className={`relative aspect-square overflow-hidden rounded-lg transition-all duration-200 ${
+                      selectedImage === img ? "ring-2 ring-primary" : "opacity-70 hover:opacity-100"
                     }`}
                   >
                     <img
@@ -338,6 +337,31 @@ export const ProjectDetailsPage = () => {
             {/* Left 2 Columns: Project Details */}
             <div className="space-y-8 md:col-span-2">
               {/* Project Overview */}
+              <div className="space-y-4 border-b border-border pb-6">
+                <div className="text-3xl font-bold text-primary md:text-4xl">
+                  <span className="mr-1 text-lg font-semibold text-primary/80 md:text-xl">From</span>
+                  {formatPrice(project.startingPrice)}
+                </div>
+                <div className="flex flex-wrap items-center gap-5 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-2">
+                    <Layers className="h-[18px] w-[18px]" />
+                    {project.configurations?.length || 0} Unit Types
+                  </span>
+                  {project.configurations?.length > 0 && (
+                    <span className="flex items-center gap-2">
+                      <Bed className="h-[18px] w-[18px]" />
+                      {Math.min(...project.configurations.map(c => c.bedrooms))}–{Math.max(...project.configurations.map(c => c.bedrooms))} Beds
+                    </span>
+                  )}
+                  {project.expectedCompletionDate && (
+                    <span className="flex items-center gap-2">
+                      <Calendar className="h-[18px] w-[18px]" />
+                      Completion {project.expectedCompletionDate}
+                    </span>
+                  )}
+                </div>
+              </div>
+
               <div className="space-y-3">
                 <h2 className="text-xl font-semibold text-foreground">Description</h2>
                 <div className="max-w-none text-sm leading-relaxed text-muted-foreground whitespace-pre-line">

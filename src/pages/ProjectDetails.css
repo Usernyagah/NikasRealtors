@@ -1,6 +1,8 @@
 .project-detail-page {
   --background: 0 0% 0%;
   --foreground: 0 0% 96%;
+  --primary: 0 0% 96%;
+  --primary-foreground: 0 0% 0%;
   --card: 0 0% 5%;
   --card-foreground: 0 0% 96%;
   --popover: 0 0% 5%;
@@ -13,7 +15,7 @@
   --accent-foreground: 0 0% 96%;
   --border: 0 0% 24%;
   --input: 0 0% 30%;
-  --ring: 40 100% 43%;
+  --ring: 0 0% 96%;
   --radius: 0;
   min-height: 100vh;
   background-color: #000;

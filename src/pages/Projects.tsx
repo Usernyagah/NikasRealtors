@@ -6,16 +6,20 @@ import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Building2,
   MapPin,
   Search,
   Layers,
   ArrowRight,
-  Filter,
-  CheckCircle2,
-  Calendar,
   Loader2,
 } from "lucide-react";
 import { projectsService, type Project } from "@/services/firestore/projects";
@@ -96,88 +100,83 @@ export const ProjectsPage = () => {
 
       <Navbar />
 
-      <main className="flex-1 pb-20">
-        {/* Hero Header */}
-        <div className="relative bg-gradient-to-b from-primary/10 via-background to-background py-16 lg:py-24 border-b border-border/60">
-          <div className="container mx-auto px-4 lg:px-8 text-center max-w-3xl space-y-4">
-            <Badge variant="outline" className="text-primary border-primary/30 px-3 py-1 font-semibold text-xs">
-              Exclusive New Developments
-            </Badge>
-            <h1 className="text-3xl sm:text-5xl font-extrabold text-foreground tracking-tight">
-              Real Estate Projects in Kenya
-            </h1>
-            <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
-              Explore meticulously curated luxury residential projects and off-plan investment opportunities with flexible payment plans in Nairobi’s most desirable neighborhoods.
-            </p>
-          </div>
-        </div>
+      <main className="flex-1">
+        <section className="bg-muted/30 py-20 lg:py-32">
+          <div className="container mx-auto px-4 lg:px-8">
+            {/* Section Header */}
+            <div className="mx-auto mb-12 max-w-3xl space-y-4 text-center">
+              <h1 className="text-4xl font-bold text-foreground md:text-5xl">
+                Real Estate Projects for <span className="text-primary">Sale in Kenya</span>
+              </h1>
+              <div className="mx-auto h-1 w-20 gradient-gold" />
+              <p className="text-lg text-muted-foreground">
+                Browse new developments and off-plan residential projects in Nairobi and across Kenya.
+              </p>
+            </div>
 
-        {/* Filter Toolbar */}
-        <section className="container mx-auto px-4 lg:px-8 -mt-7">
-          <Card className="border border-border/80 shadow-luxury bg-card/95 backdrop-blur">
-            <CardContent className="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search developments, developers, amenities..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-9 h-11"
-                />
+            {/* Search and Filter Row */}
+            <div className="mb-10 flex flex-wrap items-end gap-4">
+              <div className="min-w-[220px] flex-1">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    placeholder="Search by project, developer or location..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
               </div>
 
-              <div>
+              <div className="min-w-[180px]">
                 <select
+                  aria-label="Filter by neighborhood"
                   value={locationFilter}
                   onChange={(e) => setLocationFilter(e.target.value)}
-                  className="w-full h-11 rounded-md border border-input bg-background px-3 text-sm"
+                  className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
                 >
-                  <option value="all">All Neighborhood Enclaves</option>
+                  <option value="all">All Locations</option>
                   {locations.map((loc) => (
-                    <option key={loc} value={loc}>
-                      {loc}
-                    </option>
+                    <option key={loc} value={loc}>{loc}</option>
                   ))}
                 </select>
               </div>
 
-              <div>
+              <div className="min-w-[180px]">
                 <select
+                  aria-label="Filter by construction stage"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="w-full h-11 rounded-md border border-input bg-background px-3 text-sm"
+                  className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
                 >
-                  <option value="all">All Construction Stages</option>
+                  <option value="all">All Stages</option>
                   <option value="Planning">Planning</option>
                   <option value="Under Construction">Under Construction</option>
                   <option value="Nearing Completion">Nearing Completion</option>
                   <option value="Completed">Completed / Ready to Move</option>
                 </select>
               </div>
-            </CardContent>
-          </Card>
-        </section>
+            </div>
 
-        {/* Projects Grid */}
-        <section className="container mx-auto px-4 lg:px-8 pt-12">
+            {/* Projects Grid */}
           {loading ? (
-            <div className="py-24 text-center">
-              <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary mb-3" />
-              <p className="text-muted-foreground text-sm">Discovering developments...</p>
+            <div className="col-span-full flex justify-center py-12">
+              <Loader2 className="h-10 w-10 animate-spin text-primary" />
             </div>
           ) : filteredProjects.length === 0 ? (
-            <div className="py-20 text-center space-y-3 bg-muted/20 border border-dashed rounded-2xl max-w-xl mx-auto p-8">
-              <Building2 className="h-10 w-10 mx-auto text-muted-foreground/40" />
-              <h3 className="font-bold text-foreground text-lg">No Projects Found</h3>
-              <p className="text-xs text-muted-foreground">
+            <div className="space-y-3 py-8 text-center text-lg text-muted-foreground">
+              <Building2 className="mx-auto h-10 w-10 text-muted-foreground/40" />
+              <h3 className="font-semibold text-foreground">No Projects Found</h3>
+              <p className="text-sm">
                 {searchTerm || locationFilter !== "all" || statusFilter !== "all"
                   ? "Try resetting your filters or search keywords to view available developments."
                   : "New projects are currently being prepared. Check back soon or contact our advisory team."}
               </p>
               {(searchTerm || locationFilter !== "all" || statusFilter !== "all") && (
                 <Button
-                  size="sm"
                   variant="outline"
+                  size="sm"
+                  className="gap-2"
                   onClick={() => {
                     setSearchTerm("");
                     setLocationFilter("all");
@@ -189,89 +188,83 @@ export const ProjectsPage = () => {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
               {filteredProjects.map((project) => (
                 <Link
                   key={project.id}
                   to={`/projects/${project.slug}`}
-                  className="group rounded-2xl overflow-hidden border border-border bg-card shadow-sm hover:shadow-luxury transition-all flex flex-col"
+                  className="group block h-full"
                 >
-                  {/* Image */}
-                  <div className="relative aspect-[16/10] overflow-hidden bg-muted">
-                    <img
-                      src={project.featuredImage || project.gallery?.[0] || "/placeholder.svg"}
-                      alt={`${project.name} in ${project.location}`}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                    <div className="absolute top-3 left-3 flex gap-2">
-                      <Badge className="bg-primary text-primary-foreground text-xs font-semibold shadow-md">
-                        {project.constructionStatus || "New Development"}
-                      </Badge>
-                    </div>
-                    {project.expectedCompletionDate && (
-                      <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur text-white text-[11px] font-medium px-2.5 py-1 rounded-md">
-                        {project.expectedCompletionDate}
+                  <Card className="h-full overflow-hidden transition-smooth group-hover:shadow-luxury">
+                    <div className="relative h-64 flex-shrink-0 overflow-hidden bg-muted">
+                      <img
+                        src={project.featuredImage || project.gallery?.[0] || "/placeholder.svg"}
+                        alt={`${project.name} in ${project.location}`}
+                        className="h-full w-full object-cover transition-smooth group-hover:scale-110"
+                        loading="lazy"
+                      />
+                      <div className="absolute right-4 top-4 flex flex-col gap-2">
+                        <Badge className="gradient-gold text-secondary font-semibold shadow-lg">
+                          {project.constructionStatus || "New Development"}
+                        </Badge>
+                        {project.expectedCompletionDate && (
+                          <Badge className="bg-secondary text-white font-semibold shadow-lg">
+                            {project.expectedCompletionDate}
+                          </Badge>
+                        )}
                       </div>
-                    )}
-                  </div>
+                    </div>
 
-                  {/* Body */}
-                  <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                    <div className="space-y-2">
+                    <CardHeader>
                       {project.developer && (
-                        <p className="text-xs text-primary font-semibold tracking-wider uppercase">
+                        <p className="mb-1 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                           {project.developer}
                         </p>
                       )}
-                      <h2 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                      <CardTitle className="text-xl transition-smooth group-hover:text-primary">
                         {project.name}
-                      </h2>
-                      <p className="text-xs text-muted-foreground flex items-center gap-1">
-                        <MapPin className="h-3.5 w-3.5 text-primary flex-shrink-0" />
-                        <span>
-                          {project.neighborhood ? `${project.neighborhood}, ` : ""}
-                          {project.location}
-                        </span>
-                      </p>
-                      <p className="text-xs text-muted-foreground line-clamp-2 pt-1 leading-relaxed">
-                        {project.shortDescription}
-                      </p>
-                    </div>
+                      </CardTitle>
+                      <CardDescription className="flex items-center gap-1 text-muted-foreground">
+                        <MapPin className="h-4 w-4" />
+                        {project.neighborhood ? `${project.neighborhood}, ` : ""}
+                        {project.location}
+                      </CardDescription>
+                    </CardHeader>
 
-                    {/* Unit types count & configurations */}
-                    <div className="pt-3 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1 font-medium">
-                        <Layers className="h-3.5 w-3.5 text-primary" />
-                        {project.configurations?.length || 0} Unit Types
-                      </span>
-                      <span>
-                        {project.configurations?.length > 0 &&
-                          `${Math.min(...project.configurations.map((c) => c.bedrooms))} - ${Math.max(
-                            ...project.configurations.map((c) => c.bedrooms)
-                          )} Beds`}
-                      </span>
-                    </div>
-
-                    {/* Footer / Price */}
-                    <div className="pt-2 flex items-center justify-between">
-                      <div>
-                        <span className="text-[11px] text-muted-foreground uppercase block font-medium">
-                          Starting From
+                    <CardContent className="flex-grow space-y-4">
+                      <p className="line-clamp-2 text-xs text-muted-foreground">{project.shortDescription}</p>
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Layers className="h-4 w-4" />
+                          {project.configurations?.length || 0} Unit Types
                         </span>
-                        <span className="text-lg font-extrabold text-primary">
+                        {project.configurations?.length > 0 && (
+                          <span>
+                            {Math.min(...project.configurations.map((c) => c.bedrooms))} - {Math.max(
+                              ...project.configurations.map((c) => c.bedrooms)
+                            )} Beds
+                          </span>
+                        )}
+                      </div>
+                      <div className="border-t border-border pt-4">
+                        <span className="mr-1 text-sm font-semibold text-primary/80">From</span>
+                        <span className="text-2xl font-bold text-primary">
                           {formatPrice(project.startingPrice)}
                         </span>
                       </div>
-                      <span className="text-xs font-semibold text-primary group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                        Explore <ArrowRight className="h-3.5 w-3.5" />
+                    </CardContent>
+
+                    <CardFooter>
+                      <span className="inline-flex h-10 w-full items-center justify-center gap-2 gradient-gold font-semibold text-secondary transition-smooth group-hover:scale-[1.02]">
+                        View Details <ArrowRight className="h-4 w-4" />
                       </span>
-                    </div>
-                  </div>
+                    </CardFooter>
+                  </Card>
                 </Link>
               ))}
             </div>
           )}
+          </div>
         </section>
       </main>
 
@@ -281,4 +274,3 @@ export const ProjectsPage = () => {
 };
 
 export default ProjectsPage;
-

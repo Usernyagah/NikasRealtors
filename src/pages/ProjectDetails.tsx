@@ -15,8 +15,6 @@ import {
   Bed,
   Bath,
   Maximize,
-  Check,
-  Calendar,
   Layers,
   Phone,
   Mail,
@@ -26,8 +24,6 @@ import {
   ArrowRight,
   Loader2,
   ExternalLink,
-  Share2,
-  CheckCircle2,
 } from "lucide-react";
 import { projectsService, generateSensibleSEO, type Project, type ApartmentConfiguration } from "@/services/firestore/projects";
 import { requestsService } from "@/services/firestore/requests";
@@ -274,166 +270,88 @@ export const ProjectDetailsPage = () => {
           </div>
         </div>
 
-        {/* Hero & Media Section */}
-        <section className="container mx-auto px-4 lg:px-8 pt-8 pb-10">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Gallery / Images (2 Cols) */}
-            <div className="lg:col-span-2 space-y-3">
-              {/* Main Image */}
-              <div className="relative aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden bg-muted border shadow-luxury group">
-                <img
-                  src={selectedImage || project.featuredImage || "/placeholder.svg"}
-                  alt={`${project.name} - Luxury Residential Development in ${project.location}`}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute top-4 left-4 flex gap-2">
-                  <Badge className="bg-primary text-primary-foreground font-semibold px-3 py-1 shadow-md">
-                    {project.constructionStatus || "New Development"}
-                  </Badge>
+        {/* Project Gallery */}
+        <section className="container mx-auto px-4 lg:px-8 pt-8 pb-6">
+          <div className="relative h-[42vh] min-h-[280px] md:h-[58vh] overflow-hidden border border-border bg-muted">
+            <img
+              src={selectedImage || project.featuredImage || "/placeholder.svg"}
+              alt={`${project.name} - Residential development in ${project.location}`}
+              className="h-full w-full object-cover"
+            />
+          </div>
+
+          <div className="border-b border-border py-5 md:py-6">
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div className="space-y-2">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                  <span className="border border-border px-2.5 py-1">{project.constructionStatus || "New Development"}</span>
                   {project.expectedCompletionDate && (
-                    <Badge variant="secondary" className="bg-black/60 text-white backdrop-blur border-none px-3 py-1">
-                      Completion: {project.expectedCompletionDate}
-                    </Badge>
+                    <span className="border border-border px-2.5 py-1">Completion {project.expectedCompletionDate}</span>
                   )}
+                  {project.developer && <span>{project.developer}</span>}
                 </div>
+                <h1 className="text-2xl font-semibold text-foreground md:text-3xl">{project.name}</h1>
+                <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <MapPin className="h-4 w-4" />
+                  {project.neighborhood ? `${project.neighborhood}, ` : ""}
+                  {project.location}, {project.country || "Kenya"}
+                </p>
               </div>
 
-              {/* Thumbnails */}
-              {allImages.length > 1 && (
-                <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-thin">
-                  {allImages.map((img, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => setSelectedImage(img)}
-                      className={`relative flex-shrink-0 w-24 h-16 sm:w-28 sm:h-20 overflow-hidden border transition-all ${
-                        selectedImage === img
-                          ? "border-primary"
-                          : "border-border opacity-70 hover:opacity-100"
-                      }`}
-                    >
-                      <img
-                        src={img}
-                        alt={`${project.name} view ${idx + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Quick Overview & Pricing Summary Card (1 Col) */}
-            <div className="space-y-6">
-              <Card className="border border-border/80 shadow-luxury overflow-hidden bg-card/70 backdrop-blur sticky top-24">
-                <CardContent className="p-6 space-y-6">
-                  {/* Title & Developer */}
-                  <div>
-                    {project.developer && (
-                      <p className="text-xs uppercase tracking-wider text-primary font-semibold mb-1">
-                        Developed by {project.developer}
-                      </p>
-                    )}
-                    <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-                      {project.name}
-                    </h1>
-                    <div className="flex items-center gap-1.5 text-muted-foreground text-sm mt-2">
-                      <MapPin className="h-4 w-4 text-primary flex-shrink-0" />
-                      <span>
-                        {project.neighborhood ? `${project.neighborhood}, ` : ""}
-                        {project.location}, {project.country || "Kenya"}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Pricing */}
-                  <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-1">
-                    <span className="text-xs text-muted-foreground uppercase font-medium">Starting From</span>
-                    <div className="text-2xl sm:text-3xl font-extrabold text-primary">
-                      {formatPrice(project.startingPrice)}
-                    </div>
-                    {project.configurations?.length > 0 && (
-                      <p className="text-xs text-muted-foreground">
-                        {project.configurations.length} unit configuration{project.configurations.length > 1 ? "s" : ""} available
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Summary bullets */}
-                  <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground pt-1 border-t border-border/60">
-                    <div>
-                      <span className="block text-foreground font-semibold">Stage</span>
-                      <span>{project.constructionStatus}</span>
-                    </div>
-                    <div>
-                      <span className="block text-foreground font-semibold">Handover</span>
-                      <span>{project.expectedCompletionDate || "Contact for dates"}</span>
-                    </div>
-                    <div>
-                      <span className="block text-foreground font-semibold">Units</span>
-                      <span>
-                        {project.configurations?.length > 0
-                          ? `${Math.min(...project.configurations.map(c => c.bedrooms))} - ${Math.max(...project.configurations.map(c => c.bedrooms))} Bedrooms`
-                          : "Flexible layouts"}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="block text-foreground font-semibold">Location</span>
-                      <span>{project.neighborhood || project.location}</span>
-                    </div>
-                  </div>
-
-                  {/* Quick CTAs */}
-                  <div className="space-y-2.5 pt-2">
-                    <Button
-                      onClick={handleWhatsAppClick}
-                      className="w-full bg-white text-black hover:bg-white/90 font-semibold gap-2"
-                    >
-                      <MessageCircle className="h-4 w-4 fill-current" /> Inquire via WhatsApp
-                    </Button>
-                    <a
-                      href={`tel:${project.contactPhone || "+254710132320"}`}
-                      className="w-full inline-flex items-center justify-center gap-2 h-10 px-4 rounded-md border border-input bg-background hover:bg-accent text-sm font-medium"
-                    >
-                      <Phone className="h-4 w-4 text-primary" /> Call Sales Team
-                    </a>
-                    {project.brochureUrl && (
-                      <a
-                        href={project.brochureUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="w-full inline-flex items-center justify-center gap-2 text-xs text-primary hover:underline pt-1"
-                      >
-                        <FileText className="h-3.5 w-3.5" /> Download Project Brochure (PDF)
-                      </a>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="md:text-right">
+                <span className="block text-xs text-muted-foreground">Starting from</span>
+                <span className="text-2xl font-semibold text-foreground">{formatPrice(project.startingPrice)}</span>
+              </div>
             </div>
           </div>
+
+          {allImages.length > 1 && (
+            <div className="space-y-3 pt-5">
+              <h2 className="text-sm font-medium text-foreground">Gallery</h2>
+              <div className="grid grid-cols-4 gap-2 sm:grid-cols-5 md:grid-cols-6">
+                {allImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setSelectedImage(img)}
+                    aria-label={`View ${project.name} image ${idx + 1}`}
+                    aria-pressed={selectedImage === img}
+                    className={`aspect-square overflow-hidden border ${
+                      selectedImage === img ? "border-primary" : "border-border opacity-75 hover:opacity-100"
+                    }`}
+                  >
+                    <img
+                      src={img}
+                      alt={`${project.name} view ${idx + 1}`}
+                      className="h-full w-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
 
         {/* Detailed Content & Tabs Grid */}
-        <section className="container mx-auto px-4 lg:px-8 space-y-14">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <section className="container mx-auto px-4 lg:px-8 space-y-12 pb-10">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {/* Left 2 Columns: Project Details */}
-            <div className="lg:col-span-2 space-y-12">
+            <div className="space-y-8 md:col-span-2">
               {/* Project Overview */}
-              <div className="space-y-4">
-                <h2 className="text-2xl font-bold text-foreground">Project Overview</h2>
-                <div className="prose dark:prose-invert max-w-none text-muted-foreground leading-relaxed text-sm sm:text-base space-y-3 whitespace-pre-line">
+              <div className="space-y-3">
+                <h2 className="text-xl font-semibold text-foreground">Description</h2>
+                <div className="max-w-none text-sm leading-relaxed text-muted-foreground whitespace-pre-line">
                   {project.fullDescription || project.shortDescription}
                 </div>
               </div>
 
               {/* Apartment Configurations & Available Units */}
               {project.configurations && project.configurations.length > 0 && (
-                <div className="space-y-6 pt-4 border-t border-border/60">
+                <div className="space-y-4 border-t border-border pt-6">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
-                      <h2 className="text-2xl font-bold text-foreground">Apartment Configurations & Pricing</h2>
-                      <p className="text-xs text-muted-foreground">
+                      <h2 className="text-xl font-semibold text-foreground">Available Units & Prices</h2>
+                      <p className="text-sm text-muted-foreground">
                         Select a unit configuration to view specifications and floor plans.
                       </p>
                     </div>
@@ -443,13 +361,15 @@ export const ProjectDetailsPage = () => {
                     {project.configurations.map((config, index) => {
                       const isSelected = selectedFloorPlan?.id === config.id;
                       return (
-                        <div
+                        <button
+                          type="button"
                           key={config.id || index}
                           onClick={() => setSelectedFloorPlan(config)}
-                          className={`cursor-pointer p-4 rounded-xl border transition-all text-left space-y-3 ${
+                          aria-pressed={isSelected}
+                          className={`w-full cursor-pointer border p-4 transition-colors text-left space-y-3 ${
                             isSelected
-                              ? "border-primary bg-primary/5 shadow-md ring-1 ring-primary"
-                              : "border-border bg-card/80 hover:border-border/80 hover:bg-card"
+                              ? "border-foreground bg-secondary"
+                              : "border-border bg-background hover:bg-secondary"
                           }`}
                         >
                           <div className="flex items-center justify-between">
@@ -487,17 +407,17 @@ export const ProjectDetailsPage = () => {
                                   ~ USD ${Number(config.priceUSD).toLocaleString()}
                                 </span>
                               )}
-                            </div>
                           </div>
-                        </div>
+                          </div>
+                        </button>
                       );
                     })}
                   </div>
 
                   {/* Active Floor Plan Display */}
                   {selectedFloorPlan && (
-                    <Card className="border border-primary/30 bg-card overflow-hidden mt-4">
-                      <div className="bg-primary/5 p-4 border-b border-primary/20 flex items-center justify-between">
+                    <Card className="border border-border bg-card overflow-hidden mt-4">
+                        <div className="p-4 border-b border-border flex items-center justify-between gap-4">
                         <span className="font-semibold text-sm text-foreground flex items-center gap-2">
                           <Layers className="h-4 w-4 text-primary" />
                           Floor Plan: {selectedFloorPlan.bedrooms} Bed {selectedFloorPlan.propertyType} ({selectedFloorPlan.floorAreaSqFt} sq ft)
@@ -516,7 +436,7 @@ export const ProjectDetailsPage = () => {
                       </div>
                       <CardContent className="p-6">
                         {selectedFloorPlan.floorPlanImage ? (
-                          <div className="relative max-h-96 w-full flex items-center justify-center bg-muted/20 rounded-lg overflow-hidden border">
+                          <div className="relative max-h-96 w-full flex items-center justify-center bg-black overflow-hidden border border-border">
                             <img
                               src={selectedFloorPlan.floorPlanImage}
                               alt={`${project.name} ${selectedFloorPlan.bedrooms} Bedroom floor plan layout`}
@@ -524,7 +444,7 @@ export const ProjectDetailsPage = () => {
                             />
                           </div>
                         ) : (
-                          <div className="p-8 text-center text-muted-foreground space-y-2 bg-muted/20 rounded-lg">
+                          <div className="p-8 text-center text-muted-foreground space-y-2 bg-background">
                             <Layers className="h-8 w-8 mx-auto text-muted-foreground/40" />
                             <p className="text-sm">Architectural layout blueprint available upon request.</p>
                             <Button
@@ -545,63 +465,59 @@ export const ProjectDetailsPage = () => {
 
               {/* Amenities */}
               {project.amenities && project.amenities.length > 0 && (
-                <div className="space-y-4 pt-4 border-t border-border/60">
-                  <h2 className="text-2xl font-bold text-foreground">Amenities & Features</h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                <section className="space-y-3 border-t border-border pt-6">
+                  <h2 className="text-xl font-semibold text-foreground">Amenities & Features</h2>
+                  <ul className="grid grid-cols-1 gap-x-6 sm:grid-cols-2">
                     {project.amenities.map((amenity, idx) => (
-                      <div
+                      <li
                         key={idx}
-                        className="flex items-center gap-2.5 p-3 rounded-lg bg-card border border-border/60 text-sm text-foreground"
+                        className="flex items-start gap-2 border-b border-border py-2 text-sm text-muted-foreground"
                       >
-                        <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
-                          <Check className="h-3 w-3 stroke-[3]" />
-                        </div>
-                        <span className="font-medium text-xs sm:text-sm">{amenity}</span>
-                      </div>
+                        <span className="text-foreground">•</span>
+                        <span>{amenity}</span>
+                      </li>
                     ))}
-                  </div>
-                </div>
+                  </ul>
+                </section>
               )}
 
               {/* Payment Plans */}
               {project.paymentPlans && project.paymentPlans.length > 0 && (
-                <div className="space-y-4 pt-4 border-t border-border/60">
-                  <h2 className="text-2xl font-bold text-foreground">Flexible Payment Plans</h2>
-                  <div className="space-y-3">
+                <section className="space-y-3 border-t border-border pt-6">
+                  <h2 className="text-xl font-semibold text-foreground">Payment Plan</h2>
+                  <ul className="space-y-1.5">
                     {project.paymentPlans.map((plan, idx) => (
-                      <div
+                      <li
                         key={idx}
-                        className="flex items-start gap-3 p-3.5 rounded-xl bg-card border border-border/80 text-sm"
+                        className="flex items-start gap-2 text-sm leading-relaxed text-muted-foreground"
                       >
-                        <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-                          {idx + 1}
-                        </div>
-                        <p className="text-foreground text-sm leading-relaxed">{plan}</p>
-                      </div>
+                        <span className="text-foreground">•</span>
+                        <span>{plan}</span>
+                      </li>
                     ))}
-                  </div>
-                </div>
+                  </ul>
+                </section>
               )}
 
               {/* Location & Nearby Landmarks */}
-              <div className="space-y-4 pt-4 border-t border-border/60">
-                <h2 className="text-2xl font-bold text-foreground">Location & Neighborhood</h2>
-                <p className="text-sm text-muted-foreground">
+              <section className="space-y-3 border-t border-border pt-6">
+                <h2 className="text-xl font-semibold text-foreground">Location</h2>
+                <p className="text-sm leading-relaxed text-muted-foreground">
                   Located in the premier enclave of {project.neighborhood || project.location}, offering seamless connectivity to Nairobi's prime commercial and diplomatic hubs.
                 </p>
 
                 {project.nearbyLandmarks && project.nearbyLandmarks.length > 0 && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  <ul className="grid grid-cols-1 gap-x-6 sm:grid-cols-2">
                     {project.nearbyLandmarks.map((landmark, idx) => (
-                      <div
+                      <li
                         key={idx}
-                        className="flex items-center gap-2.5 p-3 rounded-lg bg-muted/40 border border-border/60 text-xs sm:text-sm text-foreground"
+                        className="flex items-start gap-2 border-b border-border py-2 text-sm text-muted-foreground"
                       >
-                        <MapPin className="h-4 w-4 text-primary flex-shrink-0" />
+                        <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0" />
                         <span>{landmark}</span>
-                      </div>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 )}
 
                 {project.googleMapsUrl && (
@@ -616,19 +532,66 @@ export const ProjectDetailsPage = () => {
                     </a>
                   </div>
                 )}
-              </div>
+              </section>
             </div>
 
             {/* Right 1 Column: Inquiry & Booking Form */}
             <div className="space-y-6">
-              <Card id="inquiry-card" className="border border-border/80 shadow-luxury overflow-hidden bg-card sticky top-24">
-                <div className="bg-primary px-6 py-4 text-primary-foreground">
-                  <h3 className="font-bold text-lg">Inquire About {project.name}</h3>
-                  <p className="text-xs text-primary-foreground/80 mt-0.5">
+              <section className="border border-border p-5">
+                <h2 className="text-lg font-semibold text-foreground">Project Details</h2>
+                <dl className="mt-3 divide-y divide-border text-sm">
+                  <div className="flex justify-between gap-3 py-2.5">
+                    <dt className="text-muted-foreground">Construction</dt>
+                    <dd className="text-right text-foreground">{project.constructionStatus}</dd>
+                  </div>
+                  <div className="flex justify-between gap-3 py-2.5">
+                    <dt className="text-muted-foreground">Completion</dt>
+                    <dd className="text-right text-foreground">{project.expectedCompletionDate || "Contact for details"}</dd>
+                  </div>
+                  <div className="flex justify-between gap-3 py-2.5">
+                    <dt className="text-muted-foreground">Unit types</dt>
+                    <dd className="text-right text-foreground">
+                      {project.configurations?.length ? project.configurations.length : "Contact for details"}
+                    </dd>
+                  </div>
+                  <div className="flex justify-between gap-3 py-2.5">
+                    <dt className="text-muted-foreground">Bedrooms</dt>
+                    <dd className="text-right text-foreground">
+                      {project.configurations?.length
+                        ? `${Math.min(...project.configurations.map(c => c.bedrooms))}–${Math.max(...project.configurations.map(c => c.bedrooms))}`
+                        : "Contact for details"}
+                    </dd>
+                  </div>
+                </dl>
+
+                <div className="mt-4 flex flex-col gap-2 border-t border-border pt-4">
+                  <a
+                    href={`tel:${project.contactPhone || "+254710132320"}`}
+                    className="inline-flex h-10 items-center justify-center gap-2 border border-border px-4 text-sm font-medium hover:bg-secondary"
+                  >
+                    <Phone className="h-4 w-4" /> Call Sales Team
+                  </a>
+                  {project.brochureUrl && (
+                    <a
+                      href={project.brochureUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex h-10 items-center justify-center gap-2 border border-border px-4 text-sm font-medium hover:bg-secondary"
+                    >
+                      <FileText className="h-4 w-4" /> Download Brochure
+                    </a>
+                  )}
+                </div>
+              </section>
+
+              <Card id="inquiry-card" className="border border-border bg-card overflow-hidden md:sticky md:top-24">
+                <div className="border-b border-border px-5 py-4">
+                  <h3 className="font-semibold text-lg text-foreground">Enquire about this project</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
                     Schedule a private site presentation or request pricing schedules.
                   </p>
                 </div>
-                <CardContent className="p-6">
+                <CardContent className="p-5">
                   <form onSubmit={handleInquirySubmit} className="space-y-4">
                     <div className="space-y-1.5">
                       <label className="text-xs font-medium text-foreground">Your Name *</label>
@@ -713,7 +676,7 @@ export const ProjectDetailsPage = () => {
                       type="button"
                       variant="outline"
                       onClick={handleWhatsAppClick}
-                      className="w-full border-green-600/30 text-green-700 dark:text-green-400 hover:bg-green-500/10 gap-2 text-xs font-semibold"
+                      className="w-full border-border text-foreground hover:bg-secondary gap-2 text-sm font-semibold"
                     >
                       <MessageCircle className="h-4 w-4" /> Chat on WhatsApp
                     </Button>

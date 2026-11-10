@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import "./ProjectDetails.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
@@ -142,7 +143,7 @@ export const ProjectDetailsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col justify-between bg-background">
+      <div className="project-detail-page min-h-screen flex flex-col justify-between bg-background">
         <Navbar />
         <div className="flex-1 flex items-center justify-center py-32">
           <Loader2 className="h-10 w-10 animate-spin text-primary" />
@@ -154,7 +155,7 @@ export const ProjectDetailsPage = () => {
 
   if (!project) {
     return (
-      <div className="min-h-screen flex flex-col justify-between bg-background">
+      <div className="project-detail-page min-h-screen flex flex-col justify-between bg-background">
         <SEO
           title="Project Not Found | Nikas Realty"
           description="The requested real estate development project is not available or has been unpublished."
@@ -229,7 +230,7 @@ export const ProjectDetailsPage = () => {
   ].filter((img, idx, arr) => arr.indexOf(img) === idx);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="project-detail-page min-h-screen flex flex-col bg-background">
       {/* Dynamic Automatic SEO Meta Tags */}
       <SEO
         title={seoTitle}
@@ -305,10 +306,10 @@ export const ProjectDetailsPage = () => {
                       key={idx}
                       type="button"
                       onClick={() => setSelectedImage(img)}
-                      className={`relative flex-shrink-0 w-24 h-16 sm:w-28 sm:h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                      className={`relative flex-shrink-0 w-24 h-16 sm:w-28 sm:h-20 overflow-hidden border transition-all ${
                         selectedImage === img
-                          ? "border-primary ring-2 ring-primary/30"
-                          : "border-transparent opacity-70 hover:opacity-100"
+                          ? "border-primary"
+                          : "border-border opacity-70 hover:opacity-100"
                       }`}
                     >
                       <img
@@ -386,7 +387,7 @@ export const ProjectDetailsPage = () => {
                   <div className="space-y-2.5 pt-2">
                     <Button
                       onClick={handleWhatsAppClick}
-                      className="w-full bg-[#25D366] hover:bg-[#20ba5a] text-white font-semibold gap-2 shadow-sm"
+                      className="w-full bg-white text-black hover:bg-white/90 font-semibold gap-2"
                     >
                       <MessageCircle className="h-4 w-4 fill-current" /> Inquire via WhatsApp
                     </Button>
@@ -787,4 +788,3 @@ export const ProjectDetailsPage = () => {
 };
 
 export default ProjectDetailsPage;
-

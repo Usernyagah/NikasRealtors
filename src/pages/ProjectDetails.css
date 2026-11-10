@@ -1,0 +1,63 @@
+.project-detail-page {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 96%;
+  --card: 0 0% 5%;
+  --card-foreground: 0 0% 96%;
+  --popover: 0 0% 5%;
+  --popover-foreground: 0 0% 96%;
+  --secondary: 0 0% 12%;
+  --secondary-foreground: 0 0% 96%;
+  --muted: 0 0% 9%;
+  --muted-foreground: 0 0% 65%;
+  --accent: 0 0% 18%;
+  --accent-foreground: 0 0% 96%;
+  --border: 0 0% 24%;
+  --input: 0 0% 30%;
+  --ring: 40 100% 43%;
+  --radius: 0;
+  min-height: 100vh;
+  background-color: #000;
+  color: #f5f5f5;
+}
+
+.project-detail-page *,
+.project-detail-page *::before,
+.project-detail-page *::after {
+  border-radius: 0 !important;
+  border-width: 1px;
+  box-shadow: none !important;
+}
+
+.project-detail-page :focus-visible {
+  outline: 1px solid hsl(var(--ring));
+  outline-offset: 3px;
+}
+
+.project-detail-page nav {
+  background: #000 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.project-detail-page main {
+  padding-top: 6rem;
+}
+
+.project-detail-page .gradient-dark,
+.project-detail-page footer {
+  background: #000 !important;
+}
+
+.project-detail-page .backdrop-blur,
+.project-detail-page .backdrop-blur-md {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.project-detail-page img {
+  filter: none !important;
+}
+
+.project-detail-page .group:hover img {
+  transform: none;
+}

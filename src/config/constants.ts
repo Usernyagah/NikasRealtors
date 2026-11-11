@@ -2,6 +2,7 @@
  * Application Configuration
  * Centralized configuration for all hardcoded values
  */
+import { FIREBASE_CONFIG } from "./firebase-config";
 
 // Theme Configuration
 export const THEME_CONFIG = {
@@ -17,16 +18,8 @@ export const CLOUDINARY_CONFIG = {
   uploadPreset: 'nikasrealty',
 } as const;
 
-// Firebase Configuration (fallback values - can be overridden by env vars)
-export const FIREBASE_CONFIG = {
-  apiKey: 'AIzaSyAgnkCrU_CuNP1EtNA9HG7P42uYOx-LeZk',
-  authDomain: 'nikas-db432.firebaseapp.com',
-  projectId: 'nikas-db432',
-  storageBucket: 'nikas-db432.firebasestorage.app',
-  messagingSenderId: '31056432402',
-  appId: '1:31056432402:web:9c06fabbf234a13509f7cb',
-  measurementId: 'G-PERDJVZ0SX',
-} as const;
+// Firebase configuration fallback values; environment variables can override them.
+export { FIREBASE_CONFIG };
 
 // Application Constants
 export const APP_CONFIG = {
@@ -74,4 +67,3 @@ export const PROPERTY_CONFIG = {
   ],
   statusOptions: ['for-sale', 'for-rent', 'sold'] as const,
 } as const;
-

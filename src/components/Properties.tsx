@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { propertiesService, type Property } from "@/services/firestore/properties";
 import { parsePrice } from "@/data/properties";
 import { PROPERTY_CONFIG } from "@/config/constants";
@@ -445,7 +445,14 @@ const Properties = ({ headingAsPage = false }: { headingAsPage?: boolean }) => {
                       </div>
                     </div>
                     <CardTitle className="text-xl group-hover:text-primary transition-smooth">
-                      {property.title}
+                      {property.id ? (
+                        <Link
+                          to={`/properties/${property.id}`}
+                          onClick={(event) => event.stopPropagation()}
+                        >
+                          {property.title}
+                        </Link>
+                      ) : property.title}
                     </CardTitle>
                     <div className="space-y-1">
                       {property.createdAt && formatPublishedLabel(property.createdAt) && (
@@ -507,13 +514,15 @@ const Properties = ({ headingAsPage = false }: { headingAsPage?: boolean }) => {
 
                   <CardFooter className="flex-shrink-0">
                     <Button
+                      asChild
                       className="w-full gradient-gold text-secondary font-semibold hover:scale-105 transition-smooth"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/properties/${property.id}`);
-                      }}
                     >
-                      View Details
+                      <Link
+                        to={`/properties/${property.id}`}
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        View Details
+                      </Link>
                     </Button>
                   </CardFooter>
                 </Card>

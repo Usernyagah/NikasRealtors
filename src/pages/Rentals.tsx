@@ -21,7 +21,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { propertiesService, type Property } from "@/services/firestore/properties";
 import { getPropertyImageUrl } from "@/utils/imageUtils";
 import { PROPERTY_IMAGE_FALLBACK } from "@/constants/propertyImages";
@@ -305,7 +305,14 @@ const RentalsPage = () => {
                                                 )}
                                             </div>
                                             <CardTitle className="text-xl group-hover:text-primary transition-smooth">
-                                                {property.title}
+                                                {property.id ? (
+                                                    <Link
+                                                        to={`/properties/${property.id}`}
+                                                        onClick={(event) => event.stopPropagation()}
+                                                    >
+                                                        {property.title}
+                                                    </Link>
+                                                ) : property.title}
                                             </CardTitle>
                                             <CardDescription className="flex items-center gap-1 text-muted-foreground">
                                                 <MapPin size={16} />
@@ -359,13 +366,15 @@ const RentalsPage = () => {
 
                                         <CardFooter>
                                             <Button
+                                                asChild
                                                 className="w-full gradient-gold text-secondary font-semibold hover:scale-105 transition-smooth"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    navigate(`/properties/${property.id}`);
-                                                }}
                                             >
-                                                View Details
+                                                <Link
+                                                    to={`/properties/${property.id}`}
+                                                    onClick={(event) => event.stopPropagation()}
+                                                >
+                                                    View Details
+                                                </Link>
                                             </Button>
                                         </CardFooter>
                                     </Card>

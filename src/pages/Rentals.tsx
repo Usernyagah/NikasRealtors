@@ -21,17 +21,17 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { propertiesService, type Property } from "@/services/firestore/properties";
 import { getPropertyImageUrl } from "@/utils/imageUtils";
 import { PROPERTY_IMAGE_FALLBACK } from "@/constants/propertyImages";
 import { parsePrice } from "@/data/properties";
 import { PROPERTY_CONFIG } from "@/config/constants";
+import { getPropertyDetailPath } from "@/utils/propertyRoutes";
 import SEO from "@/components/SEO";
 
 
 const RentalsPage = () => {
-    const navigate = useNavigate();
     const [allRentals, setAllRentals] = useState<Property[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
@@ -267,11 +267,12 @@ const RentalsPage = () => {
                                 );
 
                                 return (
-                                    <Card
+                                    <Link
                                         key={property.id}
-                                        className="overflow-hidden group hover:shadow-luxury transition-smooth cursor-pointer"
-                                        onClick={() => navigate(`/properties/${property.id}`)}
+                                        to={getPropertyDetailPath(property)}
+                                        className="block h-full"
                                     >
+                                    <Card className="overflow-hidden group hover:shadow-luxury transition-smooth h-full">
                                         {/* Image */}
                                         <div className="relative h-64 overflow-hidden bg-muted">
                                             <img
@@ -305,14 +306,7 @@ const RentalsPage = () => {
                                                 )}
                                             </div>
                                             <CardTitle className="text-xl group-hover:text-primary transition-smooth">
-                                                {property.id ? (
-                                                    <Link
-                                                        to={`/properties/${property.id}`}
-                                                        onClick={(event) => event.stopPropagation()}
-                                                    >
-                                                        {property.title}
-                                                    </Link>
-                                                ) : property.title}
+                                                {property.title}
                                             </CardTitle>
                                             <CardDescription className="flex items-center gap-1 text-muted-foreground">
                                                 <MapPin size={16} />
@@ -365,19 +359,12 @@ const RentalsPage = () => {
                                         </CardContent>
 
                                         <CardFooter>
-                                            <Button
-                                                asChild
-                                                className="w-full gradient-gold text-secondary font-semibold hover:scale-105 transition-smooth"
-                                            >
-                                                <Link
-                                                    to={`/properties/${property.id}`}
-                                                    onClick={(event) => event.stopPropagation()}
-                                                >
-                                                    View Details
-                                                </Link>
+                                            <Button className="w-full gradient-gold text-secondary font-semibold hover:scale-105 transition-smooth">
+                                                View Details
                                             </Button>
                                         </CardFooter>
                                     </Card>
+                                    </Link>
                                 );
                             })
                         )}

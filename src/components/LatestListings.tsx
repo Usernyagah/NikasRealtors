@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { propertiesService, type Property } from "@/services/firestore/properties";
 import { getPropertyImageUrl } from "@/utils/imageUtils";
 import { PROPERTY_IMAGE_FALLBACK } from "@/constants/propertyImages";
 import { formatPropertyPrice } from "@/utils/propertyUtils";
+import { getPropertyDetailPath } from "@/utils/propertyRoutes";
 import { Loader2 } from "lucide-react";
 
 const LatestListings = () => {
-  const navigate = useNavigate();
   const [latestProperties, setLatestProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -66,10 +66,10 @@ const LatestListings = () => {
           }
 
           return (
-            <div
+            <Link
               key={property.id}
+              to={getPropertyDetailPath(property)}
               className="flex gap-3 p-3 rounded-lg hover:bg-accent cursor-pointer transition-colors"
-              onClick={() => navigate(`/properties/${property.id}`)}
             >
               {/* Image */}
               <div className="relative w-20 h-20 flex-shrink-0 overflow-hidden rounded-md bg-muted">
@@ -100,7 +100,7 @@ const LatestListings = () => {
                   {displayPrice}
                 </p>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

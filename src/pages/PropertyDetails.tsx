@@ -158,7 +158,7 @@ const PropertyDetailsPage = () => {
     : absoluteUrl(displayImages[0] || "/logo.png");
 
   // Enhanced SEO title with location, type, and Nairobi/Kenya
-  const seoTitle = `${property.title} - ${property.type} ${isRental ? "for rent" : "for sale"} in ${property.location}, Nairobi, Kenya | Nikas Realty`;
+  const seoTitle = `${property.title} in ${property.location} | Nikas Realty`;
 
   // Enhanced meta description with key details (150-160 characters)
   const seoDescription = (() => {
@@ -208,13 +208,16 @@ const PropertyDetailsPage = () => {
   };
 
   const schemaType = propertyTypeMapping[property.type] || "Residence";
+  const schemaPrice = isRental
+    ? property.priceMonthly || property.priceDaily || priceNum
+    : priceNum;
 
   const listingJsonLd = {
     "@context": "https://schema.org",
     "@type": schemaType,
     name: property.title,
     description: listingDescription,
-    url: absoluteUrl(`/properties/${property.id || id}`),
+    url: absoluteUrl(`/${isRental ? "rentals" : "sales"}/${encodeURIComponent(property.id || id || "")}`),
     image: images.length > 0 ? images.map(img => img.startsWith("http") ? img : absoluteUrl(img)) : [listingImage],
     datePosted: property.createdAt ? new Date(property.createdAt).toISOString() : undefined,
     dateModified: property.updatedAt ? new Date(property.updatedAt).toISOString() : undefined,
@@ -238,7 +241,7 @@ const PropertyDetailsPage = () => {
     },
     offers: {
       "@type": "Offer",
-      price: priceNum ? priceNum.toString() : undefined,
+      price: schemaPrice ? schemaPrice.toString() : undefined,
       priceCurrency: "KES",
       availability: property.status === "sold" || property.status === "Sold"
         ? "https://schema.org/SoldOut"
@@ -290,7 +293,7 @@ const PropertyDetailsPage = () => {
       <SEO
         title={seoTitle}
         description={seoDescription}
-        path={`/properties/${property.id || id}`}
+        path={`/${isRental ? "rentals" : "sales"}/${encodeURIComponent(property.id || id || "")}`}
         image={listingImage}
         jsonLd={listingJsonLd}
       />

@@ -12,6 +12,7 @@ import { Calculator } from "lucide-react";
 import { useState } from "react";
 import SEO from "@/components/SEO";
 import { organizationJsonLd, websiteJsonLd, SEO_DEFAULTS } from "@/config/seo";
+import FeaturedListings from "@/components/FeaturedListings";
 
 const Index = () => {
   return (
@@ -24,6 +25,7 @@ const Index = () => {
       />
       <Navbar />
       <Hero />
+      <FeaturedListings />
       <About />
       <Properties />
       {/* Floating Calculator Button + Dialog */}

@@ -27,6 +27,7 @@ import { formatPropertyPrice } from "@/utils/propertyUtils";
 import { formatPublishedLabel } from "@/utils/dateUtils";
 import { getPropertyImageUrl } from "@/utils/imageUtils";
 import { PROPERTY_IMAGE_FALLBACK } from "@/constants/propertyImages";
+import { getPropertyDetailPath } from "@/utils/propertyRoutes";
 
 const Properties = ({ headingAsPage = false }: { headingAsPage?: boolean }) => {
   const HeadingTag = headingAsPage ? "h1" : "h2";
@@ -158,6 +159,7 @@ const Properties = ({ headingAsPage = false }: { headingAsPage?: boolean }) => {
       image: slideImage,
       price: priceDisplay,
       location: p.location || "Nairobi",
+      href: getPropertyDetailPath(p),
       publishedLabel: formatPublishedLabel(p.createdAt),
     };
   });
@@ -355,7 +357,7 @@ const Properties = ({ headingAsPage = false }: { headingAsPage?: boolean }) => {
                 <Card
                   key={property.id}
                   className="overflow-hidden group hover:shadow-luxury transition-smooth cursor-pointer flex flex-col h-full"
-                  onClick={() => navigate(`/properties/${property.id}`)}
+                  onClick={() => navigate(getPropertyDetailPath(property))}
                 >
                   {/* Image */}
                   <div className="relative h-64 overflow-hidden bg-muted flex-shrink-0">
@@ -447,7 +449,7 @@ const Properties = ({ headingAsPage = false }: { headingAsPage?: boolean }) => {
                     <CardTitle className="text-xl group-hover:text-primary transition-smooth">
                       {property.id ? (
                         <Link
-                          to={`/properties/${property.id}`}
+                          to={getPropertyDetailPath(property)}
                           onClick={(event) => event.stopPropagation()}
                         >
                           {property.title}
@@ -518,7 +520,7 @@ const Properties = ({ headingAsPage = false }: { headingAsPage?: boolean }) => {
                       className="w-full gradient-gold text-secondary font-semibold hover:scale-105 transition-smooth"
                     >
                       <Link
-                        to={`/properties/${property.id}`}
+                        to={getPropertyDetailPath(property)}
                         onClick={(event) => event.stopPropagation()}
                       >
                         View Details
@@ -541,7 +543,7 @@ export default Properties;
 const FeaturedPropertiesSlides = ({
   items,
 }: {
-  items: Array<{ id: string | number; title: string; image: string; price: string; location: string; publishedLabel?: string | null }>;
+  items: Array<{ id: string | number; title: string; image: string; price: string; location: string; href: string; publishedLabel?: string | null }>;
 }) => {
   // Hooks must be called before any conditional returns
   const [index, setIndex] = useState(0);
@@ -582,17 +584,19 @@ const FeaturedPropertiesSlides = ({
             key={p.id}
             className={`absolute inset-0 transition-opacity duration-700 ease-out ${i === index ? 'opacity-100' : 'opacity-0'}`}
           >
-            <div className="rounded-xl overflow-hidden shadow-card bg-card group cursor-pointer h-full">
-              <div className="relative h-56 sm:h-64 md:h-72 overflow-hidden">
-                <img src={p.image} alt={p.title} className="w-full h-full object-cover group-hover:scale-110 transition-smooth" />
-                <Badge className="absolute top-3 right-3 gradient-gold text-secondary font-semibold">Hot</Badge>
+            <Link to={p.href} className="block h-full">
+              <div className="rounded-xl overflow-hidden shadow-card bg-card group h-full">
+                <div className="relative h-56 sm:h-64 md:h-72 overflow-hidden">
+                  <img src={p.image} alt={p.title} className="w-full h-full object-cover group-hover:scale-110 transition-smooth" />
+                  <Badge className="absolute top-3 right-3 gradient-gold text-secondary font-semibold">Hot</Badge>
+                </div>
+                <div className="p-4">
+                  <div className="text-sm text-muted-foreground flex items-center gap-1"><MapPin size={14} />{p.location}</div>
+                  <div className="font-semibold text-foreground mt-1 group-hover:text-primary transition-smooth line-clamp-1">{p.title}</div>
+                  <div className="text-primary font-bold mt-2">{p.price}</div>
+                </div>
               </div>
-              <div className="p-4">
-                <div className="text-sm text-muted-foreground flex items-center gap-1"><MapPin size={14} />{p.location}</div>
-                <div className="font-semibold text-foreground mt-1 group-hover:text-primary transition-smooth line-clamp-1">{p.title}</div>
-                <div className="text-primary font-bold mt-2">{p.price}</div>
-              </div>
-            </div>
+            </Link>
           </div>
         ))}
         {/* Dots */}

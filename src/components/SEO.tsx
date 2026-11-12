@@ -64,6 +64,7 @@ const SEO = ({
 
   useEffect(() => {
     const url = absoluteUrl(path);
+    const imageUrl = image.startsWith("http") ? image : absoluteUrl(image);
     const robots = noindex ? "noindex, nofollow" : "index, follow";
 
     document.title = title;
@@ -77,7 +78,7 @@ const SEO = ({
     upsertMeta("property", "og:url", url);
     upsertMeta("property", "og:title", title);
     upsertMeta("property", "og:description", description);
-    upsertMeta("property", "og:image", image);
+    upsertMeta("property", "og:image", imageUrl);
     upsertMeta("property", "og:site_name", SEO_DEFAULTS.siteName);
     upsertMeta("property", "og:locale", SEO_DEFAULTS.locale);
 
@@ -85,7 +86,7 @@ const SEO = ({
     upsertMeta("name", "twitter:url", url);
     upsertMeta("name", "twitter:title", title);
     upsertMeta("name", "twitter:description", description);
-    upsertMeta("name", "twitter:image", image);
+    upsertMeta("name", "twitter:image", imageUrl);
 
     setJsonLd(jsonLd);
   }, [title, description, path, image, type, keywords, noindex, jsonLd, jsonLdKey]);

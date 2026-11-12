@@ -177,10 +177,13 @@ export const ProjectDetailsPage = () => {
 
   // Sensible SEO generation fallback
   const fallbackSEO = generateSensibleSEO(project);
-  const seoTitle = project.seo?.seoTitle?.trim() || fallbackSEO.title;
+  const seoLocation = project.neighborhood
+    ? `${project.neighborhood}, ${project.location}`
+    : project.location;
+  const seoTitle = `${project.name} in ${seoLocation} | Nikas Realty`;
   const metaDescription = project.seo?.metaDescription?.trim() || fallbackSEO.description;
-  const canonicalUrl = project.seo?.canonicalUrl?.trim() || fallbackSEO.canonical;
-  const sharingImage = project.seo?.socialSharingImage || project.featuredImage || fallbackSEO.canonical;
+  const canonicalUrl = fallbackSEO.canonical;
+  const sharingImage = project.seo?.socialSharingImage || project.featuredImage || "/logo.png";
   const noindex = project.status !== "published" || project.seo?.searchEngineIndexing === "noindex";
 
   // Comprehensive RealEstateListing + SingleFamilyResidence Schema for Rich Snippets

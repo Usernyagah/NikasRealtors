@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,13 +8,13 @@ import { propertiesService, type Property } from "@/services/firestore/propertie
 import { getPropertyImageUrl } from "@/utils/imageUtils";
 import { PROPERTY_IMAGE_FALLBACK } from "@/constants/propertyImages";
 import { formatPropertyPrice } from "@/utils/propertyUtils";
+import { getPropertyDetailPath } from "@/utils/propertyRoutes";
 
 interface SimilarListingsProps {
   currentProperty: Property;
 }
 
 const SimilarListings = ({ currentProperty }: SimilarListingsProps) => {
-  const navigate = useNavigate();
   const [similarProperties, setSimilarProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -85,11 +85,8 @@ const SimilarListings = ({ currentProperty }: SimilarListingsProps) => {
           }
 
           return (
-            <Card
-              key={property.id}
-              className="overflow-hidden group hover:shadow-luxury transition-smooth cursor-pointer"
-              onClick={() => navigate(`/properties/${property.id}`)}
-            >
+            <Link key={property.id} to={getPropertyDetailPath(property)} className="block h-full">
+            <Card className="overflow-hidden group hover:shadow-luxury transition-smooth h-full">
               {/* Image */}
               <div className="relative h-48 overflow-hidden bg-muted">
                 <img
@@ -168,17 +165,12 @@ const SimilarListings = ({ currentProperty }: SimilarListingsProps) => {
               </CardContent>
 
               <CardFooter>
-                <Button
-                  className="w-full gradient-gold text-secondary font-semibold text-sm hover:scale-105 transition-smooth"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/properties/${property.id}`);
-                  }}
-                >
+                <Button className="w-full gradient-gold text-secondary font-semibold text-sm hover:scale-105 transition-smooth">
                   View Details
                 </Button>
               </CardFooter>
             </Card>
+            </Link>
           );
         })}
       </div>

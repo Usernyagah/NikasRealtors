@@ -7,7 +7,8 @@ const Footer = () => {
   const quickLinks = [
     { name: "Home", href: "/" },
     { name: "About Us", href: "/about" },
-    { name: "Properties for Sale", href: "/properties" },
+    { name: "Projects", href: "/projects" },
+    { name: "Properties for Sale", href: "/sales" },
     { name: "Apartments for Rent", href: "/rentals" },
     { name: "Services", href: "/services" },
     { name: "Media", href: "/media" },
@@ -75,8 +76,13 @@ const Footer = () => {
             <h3 className="text-xl font-bold mb-6 text-primary">Property Types</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/properties" className="text-white/70 hover:text-primary transition-smooth">
+                <Link to="/sales" className="text-white/70 hover:text-primary transition-smooth">
                   Apartments for sale
+                </Link>
+              </li>
+              <li>
+                <Link to="/projects" className="text-white/70 hover:text-primary transition-smooth">
+                  Real estate projects
                 </Link>
               </li>
               <li>
@@ -85,22 +91,22 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/properties" className="text-white/70 hover:text-primary transition-smooth">
+                <Link to="/sales" className="text-white/70 hover:text-primary transition-smooth">
                   Houses &amp; maisonettes
                 </Link>
               </li>
               <li>
-                <Link to="/properties" className="text-white/70 hover:text-primary transition-smooth">
+                <Link to="/sales" className="text-white/70 hover:text-primary transition-smooth">
                   Luxury homes Nairobi
                 </Link>
               </li>
               <li>
-                <Link to="/properties" className="text-white/70 hover:text-primary transition-smooth">
+                <Link to="/sales" className="text-white/70 hover:text-primary transition-smooth">
                   Townhouses &amp; bungalows
                 </Link>
               </li>
               <li>
-                <Link to="/properties" className="text-white/70 hover:text-primary transition-smooth">
+                <Link to="/sales" className="text-white/70 hover:text-primary transition-smooth">
                   Off-plan properties
                 </Link>
               </li>

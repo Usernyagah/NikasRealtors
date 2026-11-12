@@ -29,12 +29,17 @@
     },
     {
       "source": "/listings",
-      "destination": "/properties",
+      "destination": "/sales",
       "statusCode": 301
     },
     {
       "source": "/for-sale",
-      "destination": "/properties",
+      "destination": "/sales",
+      "statusCode": 301
+    },
+    {
+      "source": "/properties",
+      "destination": "/sales",
       "statusCode": 301
     },
     {
@@ -136,4 +141,3 @@
     }
   ]
 }
-

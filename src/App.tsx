@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -101,7 +101,7 @@ const App = () => (
             <Route path="/projects/:slug" element={<ProjectDetailsPage />} />
             <Route path="/sales" element={<PropertiesPage />} />
             <Route path="/sales/:id" element={<PropertyDetailsPage />} />
-            <Route path="/properties" element={<PropertiesPage />} />
+            <Route path="/properties" element={<Navigate to="/sales" replace />} />
             <Route path="/rentals" element={<RentalsPage />} />
             <Route path="/rentals/:id" element={<PropertyDetailsPage />} />
             <Route path="/properties/:id" element={<PropertyDetailsPage />} />

@@ -35,13 +35,19 @@
 
 [[redirects]]
   from = "/listings"
-  to = "/properties"
+  to = "/sales"
   status = 301
 
 [[redirects]]
   from = "/for-sale"
-  to = "/properties"
+  to = "/sales"
   status = 301
+
+[[redirects]]
+  from = "/properties"
+  to = "/sales"
+  status = 301
+  force = true
 
 [[redirects]]
   from = "/for-rent"
@@ -83,4 +89,3 @@
   for = "/index.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
-

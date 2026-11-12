@@ -183,7 +183,12 @@ const makeMetaDescription = (description, name, location) => {
 };
 
 const renderLinks = (items) => items.map((item) => `
-      <li><a href="${escapeHtml(item.path)}">${escapeHtml(item.name)}</a>${item.location ? ` — ${escapeHtml(item.location)}` : ''}${item.price ? ` — ${escapeHtml(item.price)}` : ''}</li>`).join('');
+      <li>
+        <a href="${escapeHtml(item.path)}">${escapeHtml(item.name)}</a>
+        ${item.location ? `<p>${escapeHtml(item.location)}</p>` : ''}
+        ${item.price ? `<p>${escapeHtml(item.price)}</p>` : ''}
+        ${item.description ? `<p>${escapeHtml(item.description)}</p>` : ''}
+      </li>`).join('');
 
 const makePageHtml = ({ title, description, path: pagePath, image, structuredData, content }) => {
   const url = `${SITE_URL}${pagePath === '/' ? '' : pagePath}`;
@@ -231,26 +236,42 @@ const formatPrice = (property) => {
 
 const propertyStructuredData = (property, pathName, title, description, image, location) => ({
   '@context': 'https://schema.org',
-  '@type': 'RealEstateListing',
-  name: title,
-  description,
-  url: `${SITE_URL}${pathName}`,
-  image,
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: location,
-    addressCountry: 'KE',
-  },
-  ...(property.price || property.priceMonthly || property.priceDaily ? {
-    offers: {
-      '@type': 'Offer',
-      price: String(property.priceMonthly || property.priceDaily || property.price),
-      priceCurrency: 'KES',
-      businessFunction: pathName.startsWith('/rentals/')
-        ? 'https://schema.org/LeaseOut'
-        : 'https://schema.org/Sell',
+  '@graph': [
+    {
+      '@type': 'RealEstateListing',
+      name: title,
+      description,
+      url: `${SITE_URL}${pathName}`,
+      image,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: location,
+        addressCountry: 'KE',
+      },
+      ...(property.price || property.priceMonthly || property.priceDaily ? {
+        offers: {
+          '@type': 'Offer',
+          price: String(property.priceMonthly || property.priceDaily || property.price),
+          priceCurrency: 'KES',
+          businessFunction: pathName.startsWith('/rentals/')
+            ? 'https://schema.org/LeaseOut'
+            : 'https://schema.org/Sell',
+        },
+      } : {}),
     },
-  } : {}),
+    {
+      '@type': 'Residence',
+      name: title,
+      description,
+      url: `${SITE_URL}${pathName}`,
+      image,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: location,
+        addressCountry: 'KE',
+      },
+    },
+  ],
 });
 
 export async function generateSitemap() {
@@ -317,18 +338,21 @@ export async function generateSitemap() {
     location: project.neighborhood ? `${project.neighborhood}, ${project.location}` : project.location,
     path: `/projects/${encodeURIComponent(project.slug)}`,
     price: project.startingPrice ? `From KES ${Number(project.startingPrice).toLocaleString('en-KE')}` : '',
+    description: makeMetaDescription(project.shortDescription || project.fullDescription, project.name, project.location),
   }));
   const saleItems = sales.map((property) => ({
     name: property.title,
     location: property.location,
     path: propertyPath(property),
     price: formatPrice(property),
+    description: makeMetaDescription(property.description, property.title, property.location),
   }));
   const rentalItems = rentals.map((property) => ({
     name: property.title,
     location: property.location,
     path: propertyPath(property),
     price: formatPrice(property),
+    description: makeMetaDescription(property.description, property.title, property.location),
   }));
 
   if (fs.existsSync(path.join(rootDir, 'dist', 'index.html'))) {
@@ -389,23 +413,40 @@ export async function generateSitemap() {
         image,
         structuredData: {
           '@context': 'https://schema.org',
-          '@type': 'RealEstateListing',
-          name,
-          description: project.fullDescription || project.shortDescription || description,
-          url: `${SITE_URL}${route}`,
-          image,
-          address: {
-            '@type': 'PostalAddress',
-            addressLocality: location,
-            addressRegion: project.county || 'Nairobi',
-            addressCountry: project.country || 'KE',
-          },
-          offers: {
-            '@type': 'AggregateOffer',
-            priceCurrency: 'KES',
-            lowPrice: project.startingPrice,
-            availability: 'https://schema.org/InStock',
-          },
+          '@graph': [
+            {
+              '@type': 'RealEstateListing',
+              name,
+              description: project.fullDescription || project.shortDescription || description,
+              url: `${SITE_URL}${route}`,
+              image,
+              address: {
+                '@type': 'PostalAddress',
+                addressLocality: location,
+                addressRegion: project.county || 'Nairobi',
+                addressCountry: project.country || 'KE',
+              },
+              offers: {
+                '@type': 'AggregateOffer',
+                priceCurrency: 'KES',
+                lowPrice: project.startingPrice,
+                availability: 'https://schema.org/InStock',
+              },
+            },
+            {
+              '@type': 'Residence',
+              name,
+              description: project.fullDescription || project.shortDescription || description,
+              url: `${SITE_URL}${route}`,
+              image,
+              address: {
+                '@type': 'PostalAddress',
+                addressLocality: location,
+                addressRegion: project.county || 'Nairobi',
+                addressCountry: project.country || 'KE',
+              },
+            },
+          ],
         },
         content: `<main><nav aria-label="Breadcrumb"><a href="/">Home</a> · <a href="/projects">Projects</a></nav><h1>${escapeHtml(name)}</h1><p>${escapeHtml(location)}</p><p>${escapeHtml(price)}</p><p>${escapeHtml(project.fullDescription || project.shortDescription || description)}</p><p><a href="/projects">Browse all projects</a></p></main>`,
       });

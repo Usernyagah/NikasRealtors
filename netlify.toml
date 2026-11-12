@@ -59,6 +59,22 @@
   to = "/"
   status = 301
 
+# Serve generated SEO pages before the SPA fallback.
+[[redirects]]
+  from = "/projects/:slug"
+  to = "/projects/:slug/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/sales/:id"
+  to = "/sales/:id/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/rentals/:id"
+  to = "/rentals/:id/index.html"
+  status = 200
+
 # SPA fallback
 [[redirects]]
   from = "/*"

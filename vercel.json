@@ -4,6 +4,18 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/projects/:slug",
+      "destination": "/projects/:slug/index.html"
+    },
+    {
+      "source": "/sales/:id",
+      "destination": "/sales/:id/index.html"
+    },
+    {
+      "source": "/rentals/:id",
+      "destination": "/rentals/:id/index.html"
+    },
+    {
       "source": "/sitemap.xml",
       "destination": "/sitemap.xml"
     },

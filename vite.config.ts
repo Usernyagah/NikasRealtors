@@ -1,6 +1,43 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
+import fs from "node:fs";
 import path from "path";
+
+const prerenderedPreviewRoutes: Plugin = {
+  name: "prerendered-preview-routes",
+  configurePreviewServer(server) {
+    const distDir = path.resolve(__dirname, "dist");
+    server.middlewares.use((req, _res, next) => {
+      if (!req.url || (req.method !== "GET" && req.method !== "HEAD")) {
+        next();
+        return;
+      }
+
+      let pathname: string;
+      try {
+        pathname = decodeURIComponent(new URL(req.url, "http://localhost").pathname);
+      } catch {
+        next();
+        return;
+      }
+
+      const pagePath = path.resolve(distDir, `.${pathname}`, "index.html");
+      const relativePath = path.relative(distDir, pagePath);
+      if (
+        relativePath.startsWith("..") ||
+        path.isAbsolute(relativePath) ||
+        !fs.existsSync(pagePath)
+      ) {
+        next();
+        return;
+      }
+
+      const search = new URL(req.url, "http://localhost").search;
+      req.url = `${pathname.replace(/\/+$/, "")}/index.html${search}`;
+      next();
+    });
+  },
+};
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -30,6 +67,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
+    prerenderedPreviewRoutes,
   ],
   resolve: {
     alias: {

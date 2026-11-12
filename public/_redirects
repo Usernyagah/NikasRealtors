@@ -1,2 +1,4 @@
-/*    /index.html   200
-
+/projects/:slug  /projects/:slug/index.html  200
+/sales/:id       /sales/:id/index.html        200
+/rentals/:id     /rentals/:id/index.html      200
+/*                /index.html                  200

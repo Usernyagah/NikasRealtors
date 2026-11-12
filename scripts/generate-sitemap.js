@@ -376,11 +376,6 @@ export async function generateSitemap() {
     makeListingPage('/sales', 'Properties for Sale in Kenya | Nikas Realty', 'Browse homes and properties for sale in Kenya.', saleItems);
     makeListingPage('/rentals', 'Properties for Rent in Kenya | Nikas Realty', 'Browse homes and properties for rent in Kenya.', rentalItems);
 
-    const homeGroups = [
-      ['Latest Projects', projectItems.slice(0, 3)],
-      ['Featured Properties for Sale', saleItems.slice(0, 3)],
-      ['Featured Rentals', rentalItems.slice(0, 3)],
-    ].map(([heading, items]) => `<section><h2>${escapeHtml(heading)}</h2><ul>${renderLinks(items)}</ul></section>`).join('');
     writePrerenderedPage('/', {
       title: 'Apartments & Homes for Sale and Rent in Kenya | Nikas Realty',
       description: 'Find apartments, houses, maisonettes and luxury homes for sale and rent in Nairobi, Kenya with Nikas Realty.',
@@ -396,7 +391,7 @@ export async function generateSitemap() {
           url: `${SITE_URL}${item.path}`,
         })),
       },
-      content: `<main><h1>Nikas Realty — Properties in Kenya</h1>${homeGroups}<nav aria-label="Main navigation"><a href="/projects">Projects</a> · <a href="/sales">Sales</a> · <a href="/rentals">Rentals</a> · <a href="/blog">Blog</a></nav></main>`,
+      content: `<main><h1>Nikas Realty — Properties in Kenya</h1><nav aria-label="Main navigation"><a href="/projects">Projects</a> · <a href="/sales">Sales</a> · <a href="/rentals">Rentals</a> · <a href="/blog">Blog</a></nav></main>`,
     });
 
     for (const project of projects) {

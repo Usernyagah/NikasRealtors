@@ -4,20 +4,8 @@ import { getCookieConsent } from '@/lib/cookieConsent';
 const TRACKING_ID = 'G-PERDJVZ0SX';
 let gaInitialized = false;
 
-const loadGtagScript = () => {
-    if (typeof document === 'undefined') return;
-    if (document.querySelector(`script[src*="googletagmanager.com/gtag/js?id=${TRACKING_ID}"]`)) {
-        return;
-    }
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${TRACKING_ID}`;
-    document.head.appendChild(script);
-};
-
 export const enableGoogleAnalytics = () => {
     if (gaInitialized || !TRACKING_ID) return;
-    loadGtagScript();
     initGA();
 };
 

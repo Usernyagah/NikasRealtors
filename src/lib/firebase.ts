@@ -2,7 +2,6 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import { getAnalytics } from 'firebase/analytics';
 import { FIREBASE_CONFIG } from '@/config/constants';
 
 /**
@@ -33,13 +32,11 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = typeof window !== 'undefined' ? getAnalytics(app) : undefined;
 
 // Initialize Firebase services
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
-export const firebaseAnalytics = analytics;
 
 // Test Firestore connection (only log errors in production, full logging in dev)
 if (typeof window !== 'undefined' && import.meta.env.DEV) {
@@ -58,4 +55,3 @@ if (typeof window !== 'undefined' && import.meta.env.DEV) {
 }
 
 export default app;
-

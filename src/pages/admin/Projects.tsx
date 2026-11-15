@@ -129,7 +129,7 @@ export const AdminProjects = () => {
               <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} /> Refresh
             </Button>
             <Button
-              onClick={() => navigate("/admin/add-project")}
+              onClick={() => navigate("/admin/projects/new")}
               className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
             >
               <PlusCircle className="h-4 w-4" /> Add New Project
@@ -413,4 +413,3 @@ export const AdminProjects = () => {
 };
 
 export default AdminProjects;
-

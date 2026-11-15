@@ -205,7 +205,7 @@ const makePageHtml = ({ title, description, path: pagePath, image, structuredDat
   html = html.replace(/<meta\s+name="twitter:description"[^>]*>/i, `<meta name="twitter:description" content="${escapeHtml(description)}" />`);
   html = html.replace(/<meta\s+name="twitter:image"[^>]*>/i, `<meta name="twitter:image" content="${escapeHtml(image)}" />`);
   html = html.replace(/<link\s+rel="canonical"[^>]*>/i, `<link rel="canonical" href="${escapeHtml(url)}" />`);
-  html = html.replace('</head>', `<script type="application/ld+json">${safeJsonLd}</script>\n  </head>`);
+  html = html.replace('</head>', `<script type="application/ld+json" data-nikas-seo-jsonld="true">${safeJsonLd}</script>\n  </head>`);
   html = html.replace('<div id="root"></div>', `<div id="root">${content}</div>`);
   return html;
 };
@@ -279,7 +279,10 @@ export async function generateSitemap() {
     fetchCollection('projects', ['published'], [
       'name', 'slug', 'location', 'neighborhood', 'county', 'country',
       'shortDescription', 'fullDescription', 'startingPrice', 'featuredImage',
-      'gallery', 'seo', 'updatedAt', 'publishedAt', 'createdAt',
+      'featuredImageAlt', 'street', 'minimumDepositPercentage',
+      'paymentPlanSummary', 'pastNotableProjects', 'configurations', 'faqs',
+      'gallery', 'galleryAltTexts', 'seo', 'amenities', 'expectedCompletionDate',
+      'developer', 'updatedAt', 'publishedAt', 'createdAt',
     ]),
     fetchCollection('properties', ['for-sale', 'For Sale'], [
       'title', 'status', 'location', 'description', 'price', 'priceType', 'priceDaily',
@@ -398,10 +401,68 @@ export async function generateSitemap() {
       const route = `/projects/${encodeURIComponent(project.slug)}`;
       const name = project.name;
       const location = project.neighborhood ? `${project.neighborhood}, ${project.location}` : project.location;
+      const units = Array.isArray(project.configurations) ? project.configurations : [];
+      const unitTitle = (unit) => unit.unitTitle || unit.unitName ||
+        (unit.bedrooms ? `${unit.bedrooms} Bedroom ${unit.propertyType || ''}`.trim() : unit.propertyType || 'Apartment');
+      const unitNames = units.map(unitTitle).filter(Boolean);
+      const startingPrice = project.startingPrice ? Number(project.startingPrice) : undefined;
+      const formattedPrice = startingPrice ? startingPrice.toLocaleString('en-KE') : '';
+      const title = project.seo?.seoTitle?.trim() ||
+        `${name} ${project.neighborhood || project.location}: ${unitNames.join(', ') || 'Apartments'}${formattedPrice ? ` (From KES ${formattedPrice})` : ''}`;
       const description = makeMetaDescription(project.seo?.metaDescription || project.shortDescription || project.fullDescription, name, location);
       const image = asAbsoluteImage(project.seo?.socialSharingImage || project.featuredImage || project.gallery?.[0]);
-      const title = `${name} in ${location} | Nikas Realty`;
-      const price = project.startingPrice ? `From KES ${Number(project.startingPrice).toLocaleString('en-KE')}` : 'Price on request';
+      const price = startingPrice ? `From KES ${formattedPrice}` : 'Price on request';
+      const faqs = Array.isArray(project.faqs) && project.faqs.length
+        ? project.faqs
+        : [
+          {
+            question: `What is the starting price for units at ${name}?`,
+            answer: `${name} has units starting from ${price.replace(/^From /, '')}. Contact Nikas Realty to confirm current availability and pricing.`,
+          },
+          {
+            question: `When will ${name} be completed?`,
+            answer: `${name} is expected to be completed in ${project.expectedCompletionDate || 'the date confirmed by the developer'}. Contact Nikas Realty for the latest construction update.`,
+          },
+          {
+            question: `What payment plan is available at ${name}?`,
+            answer: project.paymentPlanSummary || `A minimum deposit of ${project.minimumDepositPercentage ?? 20}% is required. Contact Nikas Realty for the current payment schedule.`,
+          },
+        ];
+      const address = {
+        '@type': 'PostalAddress',
+        ...(project.street ? { streetAddress: project.street } : {}),
+        addressLocality: project.neighborhood || project.location,
+        addressRegion: project.county || project.location || 'Nairobi',
+        addressCountry: project.country || 'KE',
+      };
+      const unitRows = units.map((unit) => `
+        <tr><th scope="row">${escapeHtml(unitTitle(unit))}</th>
+          <td>${escapeHtml(unit.floorAreaLabel || (unit.floorAreaSqM ? `${unit.floorAreaSqM} sqm` : `${unit.floorAreaSqFt || ''} sq ft`))}</td>
+          <td>${escapeHtml(unit.buildingWing || '—')}</td>
+          <td>${escapeHtml(`KES ${Number(unit.cashPrice || unit.startingPrice || 0).toLocaleString('en-KE')}`)}</td>
+          <td>${escapeHtml(unit.installmentPriceRange || 'Contact for plan pricing')}</td></tr>`).join('');
+      const faqHtml = faqs.map((faq) =>
+        `<details><summary>${escapeHtml(faq.question)}</summary><p>${escapeHtml(faq.answer)}</p></details>`
+      ).join('');
+      const pastProjects = (project.pastNotableProjects || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('');
+      const amenityItems = (project.amenities || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('');
+      const relatedProjects = projects
+        .filter((item) => item.slug !== project.slug && item.neighborhood?.toLowerCase() === project.neighborhood?.toLowerCase())
+        .slice(0, 3)
+        .map((item) => `<li><a href="/projects/${encodeURIComponent(item.slug)}">${escapeHtml(item.name)}</a></li>`)
+        .join('');
+      const heroImage = project.featuredImage
+        ? `<img src="${escapeHtml(asAbsoluteImage(project.featuredImage))}" alt="${escapeHtml(project.featuredImageAlt || `${name} in ${location}`)}">`
+        : '';
+      const galleryImages = (project.gallery || []).map((galleryImage, index) => `
+        <img src="${escapeHtml(asAbsoluteImage(galleryImage))}" alt="${escapeHtml(project.galleryAltTexts?.[index] || `${name} gallery image ${index + 1}`)}">`
+      ).join('');
+      const unitOptions = units.map((unit) =>
+        `<option>${escapeHtml(unitTitle(unit))}</option>`
+      ).join('');
+      const pageHeading = `${name}, ${project.street || project.location} – ${project.neighborhood || project.location}, ${project.location || project.county || 'Nairobi'}`;
+      const paymentSummary = project.paymentPlanSummary || `Minimum deposit: ${project.minimumDepositPercentage ?? 20}%. Contact Nikas Realty for the full payment schedule.`;
+      const inquiryMessage = encodeURIComponent(`Hello Nikas Realty, I am interested in ${name} in ${location}. Please share availability and the brochure.`);
       writePrerenderedPage(route, {
         title,
         description,
@@ -414,36 +475,64 @@ export async function generateSitemap() {
               name,
               description: project.fullDescription || project.shortDescription || description,
               url: `${SITE_URL}${route}`,
-              image,
-              address: {
-                '@type': 'PostalAddress',
-                addressLocality: location,
-                addressRegion: project.county || 'Nairobi',
-                addressCountry: project.country || 'KE',
-              },
+              image: [project.featuredImage, ...(project.gallery || [])].filter(Boolean).map(asAbsoluteImage),
+              address,
               offers: {
                 '@type': 'AggregateOffer',
                 priceCurrency: 'KES',
-                lowPrice: project.startingPrice,
+                lowPrice: startingPrice,
+                offerCount: units.length || 1,
                 availability: 'https://schema.org/InStock',
               },
             },
             {
-              '@type': 'Residence',
-              name,
-              description: project.fullDescription || project.shortDescription || description,
-              url: `${SITE_URL}${route}`,
-              image,
-              address: {
-                '@type': 'PostalAddress',
-                addressLocality: location,
-                addressRegion: project.county || 'Nairobi',
-                addressCountry: project.country || 'KE',
-              },
+              '@type': 'FAQPage',
+              mainEntity: faqs.map((faq) => ({
+                '@type': 'Question',
+                name: faq.question,
+                acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+              })),
             },
           ],
         },
-        content: `<main><nav aria-label="Breadcrumb"><a href="/">Home</a> · <a href="/projects">Projects</a></nav><h1>${escapeHtml(name)}</h1><p>${escapeHtml(location)}</p><p>${escapeHtml(price)}</p><p>${escapeHtml(project.fullDescription || project.shortDescription || description)}</p><p><a href="/projects">Browse all projects</a></p></main>`,
+        content: `<main>
+          <nav aria-label="Breadcrumb"><a href="/">Home</a> · <a href="/projects">Projects</a> · ${escapeHtml(name)}</nav>
+          <article>
+            ${heroImage}
+            <div aria-label="Project gallery">${galleryImages}</div>
+            <h1>${escapeHtml(pageHeading)}</h1>
+            <p>${escapeHtml(project.shortDescription || description)}</p>
+            <section aria-label="Key project highlights"><h2>Project Highlights</h2><ul>
+              <li>Starting price: ${escapeHtml(price)}</li>
+              <li>Completion: ${escapeHtml(project.expectedCompletionDate || 'Contact for details')}</li>
+              <li>Location: ${escapeHtml(location)}</li>
+              <li>Minimum deposit: ${escapeHtml(`${project.minimumDepositPercentage ?? 'Contact us'}${project.minimumDepositPercentage !== undefined ? '%' : ''}`)}</li>
+            </ul></section>
+            <section><h2>Unit Types, Floor Plans &amp; Pricing</h2>
+              <table><thead><tr><th>Unit Type</th><th>Floor Area</th><th>Wing</th><th>Cash Price</th><th>Installment Price</th></tr></thead><tbody>${unitRows}</tbody></table>
+            </section>
+            <section><h2>Flexible Payment Plan &amp; Investment Highlights</h2>
+              <p>${escapeHtml(paymentSummary)}</p>
+              ${project.developer ? `<p>Developer: ${escapeHtml(project.developer)}</p>` : ''}
+              ${pastProjects ? `<h3>Developer track record</h3><ul>${pastProjects}</ul>` : ''}
+            </section>
+            <section><h2>Lifestyle Amenities &amp; Building Features</h2><ul>${amenityItems}</ul></section>
+            <section><h2>Frequently Asked Questions</h2>${faqHtml}</section>
+            <section><h2>Request Call-Back &amp; Brochure</h2><p>Speak with the Nikas Realty team about ${escapeHtml(name)}.</p>
+              <form><label>Name <input name="name" autocomplete="name" required></label>
+                <label>Phone / WhatsApp <input name="phone" type="tel" autocomplete="tel" required></label>
+                <label>Email <input name="email" type="email" autocomplete="email"></label>
+                <label>Preferred Unit Type <select name="unit"><option>Any unit type</option>${unitOptions}</select></label>
+                <label>Message <textarea name="message"></textarea></label>
+                <button type="submit">Request a Call-Back</button>
+              </form>
+              <p><a href="https://wa.me/254710132320?text=${inquiryMessage}">Chat on WhatsApp</a></p>
+            </section>
+            <section><h2>Similar Projects in ${escapeHtml(project.neighborhood || project.location)}</h2>
+              <ul>${relatedProjects || '<li><a href="/projects">Browse all projects</a></li>'}</ul>
+            </section>
+          </article>
+        </main>`,
       });
     }
 

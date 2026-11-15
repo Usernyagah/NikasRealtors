@@ -18,6 +18,11 @@ const COLLECTION_NAME = 'projects';
 export interface ApartmentConfiguration {
   id: string;
   unitName?: string; // e.g. "Studio (48 sqm)", "2 Bedroom (85 sqm)"
+  unitTitle?: string;
+  floorAreaLabel?: string;
+  buildingWing?: string;
+  cashPrice?: number;
+  installmentPriceRange?: string;
   propertyType: string; // e.g. Studio, Apartment, Penthouse, Duplex, Villa
   bedrooms: number;
   bathrooms: number;
@@ -28,6 +33,11 @@ export interface ApartmentConfiguration {
   maxPrice?: number;
   availabilityStatus: 'Available' | 'Sold Out' | 'Reserved';
   floorPlanImage?: string;
+}
+
+export interface ProjectFAQ {
+  question: string;
+  answer: string;
 }
 
 export interface ProjectSEO {
@@ -46,6 +56,8 @@ export interface Project {
   developer?: string;
   location: string;
   neighborhood?: string;
+  street?: string;
+  pastNotableProjects?: string[];
   county?: string;
   country?: string;
   googleMapsUrl?: string;
@@ -57,10 +69,14 @@ export interface Project {
   status: 'published' | 'draft';
   constructionStatus: 'Planning' | 'Under Construction' | 'Nearing Completion' | 'Completed' | 'Ready to Move';
   expectedCompletionDate?: string;
+  minimumDepositPercentage?: number;
+  paymentPlanSummary?: string;
 
   // Media
   featuredImage?: string;
+  featuredImageAlt?: string;
   gallery: string[];
+  galleryAltTexts?: string[];
   brochureUrl?: string;
 
   // Features
@@ -70,6 +86,7 @@ export interface Project {
 
   // Configurations
   configurations: ApartmentConfiguration[];
+  faqs?: ProjectFAQ[];
 
   // Contact
   contactPhone?: string;
@@ -399,4 +416,3 @@ export const projectsService = {
     }
   },
 };
-

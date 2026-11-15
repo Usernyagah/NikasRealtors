@@ -17,11 +17,15 @@ const COLLECTION_NAME = 'requests';
 
 export interface Request {
   id?: string;
+  type?: string;
   name: string;
   email?: string;
   phone: string;
   message: string;
   property?: string;
+  propertyId?: string;
+  propertyTitle?: string;
+  preferredUnitType?: string;
   contacted?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -79,7 +83,7 @@ export const requestsService = {
   async create(request: Omit<Request, 'id' | 'createdAt' | 'updatedAt' | 'contacted'>) {
     try {
       const requestData = {
-        ...request,
+        ...Object.fromEntries(Object.entries(request).filter(([, value]) => value !== undefined)),
         contacted: false,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
@@ -136,4 +140,3 @@ export const requestsService = {
     }
   },
 };
-

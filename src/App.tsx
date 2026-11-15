@@ -24,10 +24,10 @@ import MediaWatchPage from "./pages/MediaWatch";
 import AdminLogin from "./pages/admin/Login";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminProjects from "./pages/admin/Projects";
-import AdminAddProject from "./pages/admin/AddProject";
+import AdminAddProject from "./pages/admin/ProjectCreate";
 import AdminEditProject from "./pages/admin/EditProject";
 import ProjectsPage from "./pages/Projects";
-import ProjectDetailsPage from "./pages/ProjectDetails";
+import ProjectDetailsPage from "./pages/PublicProjectPage";
 import AdminProperties from "./pages/admin/Properties";
 import AdminAddProperty from "./pages/admin/AddProperty";
 import AdminBlogs from "./pages/admin/Blogs";
@@ -111,6 +111,7 @@ const App = () => (
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/projects" element={<ProtectedRoute><AdminProjects /></ProtectedRoute>} />
+            <Route path="/admin/projects/new" element={<ProtectedRoute><AdminAddProject /></ProtectedRoute>} />
             <Route path="/admin/add-project" element={<ProtectedRoute><AdminAddProject /></ProtectedRoute>} />
             <Route path="/admin/edit-project/:id" element={<ProtectedRoute><AdminEditProject /></ProtectedRoute>} />
             <Route

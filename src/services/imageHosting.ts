@@ -109,4 +109,3 @@ export const imageHosting = {
     // and delete them via a Cloud Function or backend
   },
 };
-

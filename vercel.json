@@ -8,6 +8,14 @@
       "destination": "/projects/:slug/index.html"
     },
     {
+      "source": "/blog/:id",
+      "destination": "/blog/:id/index.html"
+    },
+    {
+      "source": "/media/:id",
+      "destination": "/media/:id/index.html"
+    },
+    {
       "source": "/sales/:id",
       "destination": "/sales/:id/index.html"
     },
@@ -29,6 +37,11 @@
     }
   ],
   "redirects": [
+    {
+      "source": "/projects/ivy-park-residence",
+      "destination": "https://nikasrealtors.com/projects/ivy-park-residence-kilimani-1-2-3-bed-apartments-dsq-from-kes-67m",
+      "statusCode": 301
+    },
     {
       "source": "/about-us",
       "destination": "/about",

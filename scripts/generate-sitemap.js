@@ -190,12 +190,13 @@ const renderLinks = (items) => items.map((item) => `
         ${item.description ? `<p>${escapeHtml(item.description)}</p>` : ''}
       </li>`).join('');
 
-const makePageHtml = ({ title, description, path: pagePath, image, structuredData, content }) => {
+const makePageHtml = ({ title, description, path: pagePath, image, type = 'website', structuredData, content }) => {
   const url = `${SITE_URL}${pagePath === '/' ? '' : pagePath}`;
   const safeJsonLd = JSON.stringify(structuredData).replaceAll('<', '\\u003c');
   let html = htmlTemplate;
   html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(title)}</title>`);
   html = html.replace(/<meta\s+name="description"[^>]*>/i, `<meta name="description" content="${escapeHtml(description)}" />`);
+  html = html.replace(/<meta\s+property="og:type"[^>]*>/i, `<meta property="og:type" content="${escapeHtml(type)}" />`);
   html = html.replace(/<meta\s+property="og:url"[^>]*>/i, `<meta property="og:url" content="${escapeHtml(url)}" />`);
   html = html.replace(/<meta\s+property="og:title"[^>]*>/i, `<meta property="og:title" content="${escapeHtml(title)}" />`);
   html = html.replace(/<meta\s+property="og:description"[^>]*>/i, `<meta property="og:description" content="${escapeHtml(description)}" />`);
@@ -275,7 +276,7 @@ const propertyStructuredData = (property, pathName, title, description, image, l
 });
 
 export async function generateSitemap() {
-  const [allProjects, salesDocuments, rentalDocuments] = await Promise.all([
+  const [allProjects, salesDocuments, rentalDocuments, allBlogs, allMedia] = await Promise.all([
     fetchCollection('projects', ['published'], [
       'name', 'slug', 'location', 'neighborhood', 'county', 'country',
       'shortDescription', 'fullDescription', 'startingPrice', 'featuredImage',
@@ -294,6 +295,15 @@ export async function generateSitemap() {
       'priceMonthly', 'priceFrom', 'images', 'image', 'gallery', 'updatedAt',
       'createdAt', 'bedrooms', 'bathrooms',
     ]),
+    fetchCollection('blogs', ['published', 'Published'], [
+      'title', 'summary', 'content', 'image', 'author', 'status',
+      'publishedAt', 'createdAt', 'updatedAt',
+    ]),
+    fetchCollection('media', ['published', 'Published'], [
+      'title', 'description', 'youtubeVideoId', 'propertyId', 'propertyTitle',
+      'propertyLocation', 'propertyBedrooms', 'propertyType', 'category', 'status',
+      'publishedAt', 'createdAt', 'updatedAt',
+    ]),
   ]);
   const allProperties = [...salesDocuments, ...rentalDocuments];
   const projects = allProjects.filter((project) =>
@@ -309,13 +319,23 @@ export async function generateSitemap() {
     new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
   const sales = properties.filter((property) => propertyPath(property)?.startsWith('/sales/')).sort(newestFirst);
   const rentals = properties.filter((property) => propertyPath(property)?.startsWith('/rentals/')).sort(newestFirst);
+  const blogs = allBlogs.filter((blog) =>
+    blog.status?.toLowerCase() === 'published' && blog.title && blog.id
+  ).sort(newestFirst);
+  const media = allMedia.filter((item) =>
+    item.status?.toLowerCase() === 'published' && item.title && item.id && item.youtubeVideoId
+  ).sort(newestFirst);
 
   const staticEntries = [
     { loc: `${SITE_URL}/`, freq: 'daily', priority: '1.0' },
+    { loc: `${SITE_URL}/about`, freq: 'monthly', priority: '0.6' },
+    { loc: `${SITE_URL}/contact`, freq: 'monthly', priority: '0.6' },
     { loc: `${SITE_URL}/projects`, freq: 'daily', priority: '0.9' },
     { loc: `${SITE_URL}/sales`, freq: 'daily', priority: '0.9' },
     { loc: `${SITE_URL}/rentals`, freq: 'daily', priority: '0.9' },
+    { loc: `${SITE_URL}/services`, freq: 'weekly', priority: '0.7' },
     { loc: `${SITE_URL}/blog`, freq: 'weekly', priority: '0.7' },
+    { loc: `${SITE_URL}/media`, freq: 'weekly', priority: '0.6' },
   ].map((entry) => ({ ...entry, lastmod: today }));
 
   const listingEntries = [
@@ -330,6 +350,18 @@ export async function generateSitemap() {
       freq: 'weekly',
       priority: '0.8',
       lastmod: toDate(property.updatedAt || property.createdAt) || today,
+    })),
+    ...blogs.map((blog) => ({
+      loc: `${SITE_URL}/blog/${encodeURIComponent(blog.id)}`,
+      freq: 'monthly',
+      priority: '0.6',
+      lastmod: toDate(blog.updatedAt || blog.publishedAt || blog.createdAt) || today,
+    })),
+    ...media.map((item) => ({
+      loc: `${SITE_URL}/media/${encodeURIComponent(item.id)}`,
+      freq: 'monthly',
+      priority: '0.5',
+      lastmod: toDate(item.updatedAt || item.publishedAt || item.createdAt) || today,
     })),
   ];
   const entries = [...staticEntries, ...listingEntries];
@@ -357,10 +389,22 @@ export async function generateSitemap() {
     price: formatPrice(property),
     description: makeMetaDescription(property.description, property.title, property.location),
   }));
+  const blogItems = blogs.map((blog) => ({
+    name: blog.title,
+    location: blog.author ? `By ${blog.author}` : '',
+    path: `/blog/${encodeURIComponent(blog.id)}`,
+    description: makeMetaDescription(blog.summary || blog.content, blog.title, 'Kenya'),
+  }));
+  const mediaItems = media.map((item) => ({
+    name: item.title,
+    location: item.propertyLocation || '',
+    path: `/media/${encodeURIComponent(item.id)}`,
+    description: makeMetaDescription(item.description, item.title, item.propertyLocation || 'Kenya'),
+  }));
 
   if (fs.existsSync(path.join(rootDir, 'dist', 'index.html'))) {
     htmlTemplate = fs.readFileSync(path.join(rootDir, 'dist', 'index.html'), 'utf8');
-    const makeListingPage = (route, title, description, items) => writePrerenderedPage(route, {
+    const makeListingPage = (route, title, description, items, itemType = 'RealEstateListing') => writePrerenderedPage(route, {
       title,
       description,
       image: `${SITE_URL}/logo.png`,
@@ -370,14 +414,109 @@ export async function generateSitemap() {
         name: title,
         description,
         url: `${SITE_URL}${route}`,
-        hasPart: items.map((item) => ({ '@type': 'RealEstateListing', name: item.name, url: `${SITE_URL}${item.path}` })),
+        hasPart: items.map((item) => ({ '@type': itemType, name: item.name, url: `${SITE_URL}${item.path}` })),
       },
       content: listingContent(title, items),
     });
 
     makeListingPage('/projects', 'Real Estate Projects in Kenya | Nikas Realty', 'Browse current real estate projects and developments in Kenya.', projectItems);
-    makeListingPage('/sales', 'Properties for Sale in Kenya | Nikas Realty', 'Browse homes and properties for sale in Kenya.', saleItems);
-    makeListingPage('/rentals', 'Properties for Rent in Kenya | Nikas Realty', 'Browse homes and properties for rent in Kenya.', rentalItems);
+    makeListingPage(
+      '/sales',
+      'Apartments & Homes for Sale in Nairobi, Kenya | Nikas Realty',
+      'Browse apartments, houses, maisonettes and luxury homes for sale in Nairobi and across Kenya. View current Nikas Realty listings in Westlands, Kilimani, Kileleshwa, Langata, Syokimau and more.',
+      saleItems
+    );
+    makeListingPage(
+      '/rentals',
+      'Apartments & Houses for Rent in Nairobi, Kenya | Nikas Realty',
+      'Find apartments and houses for rent in Nairobi, Kenya. Browse rental listings in Westlands, Kilimani, Kileleshwa, Langata, Syokimau and other neighbourhoods with Nikas Realty.',
+      rentalItems
+    );
+    makeListingPage(
+      '/blog',
+      'Kenya Real Estate Blog | Apartments, Homes & Market Insights | Nikas Realty',
+      'Advice and stories about buying, selling and renting apartments and homes in Nairobi and Kenya. Market insights from Nikas Realty.',
+      blogItems,
+      'BlogPosting'
+    );
+    makeListingPage(
+      '/media',
+      'Property Video Tours in Kenya | Apartments & Homes | Nikas Realty',
+      'Watch video tours of apartments and homes for sale and rent in Nairobi and across Kenya from Nikas Realty.',
+      mediaItems,
+      'VideoObject'
+    );
+
+    writePrerenderedPage('/services', {
+      title: 'Real Estate Services in Nairobi, Kenya | Nikas Realty',
+      description: 'Property buying, renting, valuation, legal support and mortgage guidance from Nikas Realty in Nairobi, Kenya.',
+      image: `${SITE_URL}/logo.png`,
+      structuredData: {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: 'Real estate services in Nairobi',
+        description: 'Home purchase consultation, investment guidance, valuation, legal support and mortgage assistance from Nikas Realty.',
+        url: `${SITE_URL}/services`,
+      },
+      content: `<main>
+        <nav aria-label="Breadcrumb"><a href="/">Home</a> · <span>Real Estate Services</span></nav>
+        <h1>Real Estate Services in Nairobi, Kenya</h1>
+        <p>Nikas Realty helps buyers, sellers and investors make informed property decisions across Nairobi and Kenya.</p>
+        <section><h2>Home Purchase Consultation</h2><p>Get guidance on finding and purchasing a home that fits your needs, budget and preferred location.</p></section>
+        <section><h2>Property Investment Guidance</h2><p>Explore residential property opportunities and get practical advice for building your real estate investment portfolio.</p></section>
+        <section><h2>Real Estate Valuation</h2><p>Understand property value to support informed buying, selling and investment decisions.</p></section>
+        <section><h2>Legal and Documentation Assistance</h2><p>Get support with property transaction paperwork and documentation throughout the buying process.</p></section>
+        <section><h2>Financing and Mortgage Support</h2><p>Explore financing and mortgage options relevant to your property purchase.</p></section>
+        <p><a href="/contact">Contact Nikas Realty about our real estate services</a></p>
+      </main>`,
+    });
+
+    writePrerenderedPage('/about', {
+      title: 'About Nikas Realty | Real Estate Agents in Nairobi, Kenya',
+      description: 'Meet the Nikas Realty team. We help clients find apartments, houses and luxury homes for sale and rent in Nairobi, including Westlands, Kilimani, Kileleshwa, Langata and Syokimau.',
+      image: `${SITE_URL}/logo.png`,
+      structuredData: {
+        '@context': 'https://schema.org',
+        '@type': 'AboutPage',
+        name: 'About Nikas Realty',
+        url: `${SITE_URL}/about`,
+        description: 'Nikas Realty helps clients find apartments, houses and luxury homes for sale and rent in Nairobi, Kenya.',
+      },
+      content: `<main>
+        <nav aria-label="Breadcrumb"><a href="/">Home</a> · <span>About Nikas Realty</span></nav>
+        <h1>About Nikas Realty</h1>
+        <p>At Nikas Realty, we help clients find apartments, houses and luxury homes for sale and rent in Nairobi and across Kenya. Our team offers professional advice, customized property solutions, and a seamless buying and renting experience.</p>
+        <section><h2>Our Story</h2><p>Nikas Realty began with a vision to connect families, investors, and communities to high-quality homes and properties in Kenya. We aim to be a trusted real estate advisor, guided by service and integrity.</p></section>
+        <section><h2>Our Mission</h2><p>To simplify the property experience in Kenya through expert advice, transparent processes, and a curated selection of homes for every need.</p></section>
+        <section><h2>Our Vision and Values</h2><p>To be a trusted real estate partner, delivering value, service and innovation. Our values include integrity, excellence, customer focus, innovation and community.</p></section>
+        <p><a href="/sales">Browse properties for sale</a> · <a href="/rentals">Browse properties for rent</a> · <a href="/contact">Contact our team</a></p>
+      </main>`,
+    });
+
+    writePrerenderedPage('/contact', {
+      title: 'Contact Nikas Realty | Apartments & Homes in Nairobi',
+      description: 'Talk to Nikas Realty about apartments and homes for sale or rent in Nairobi, Kenya. Call, WhatsApp or send a message to discuss listings in Westlands, Kilimani and beyond.',
+      image: `${SITE_URL}/logo.png`,
+      structuredData: {
+        '@context': 'https://schema.org',
+        '@type': 'ContactPage',
+        name: 'Contact Nikas Realty',
+        url: `${SITE_URL}/contact`,
+        telephone: '+254710132320',
+        email: 'nikasrealty@gmail.com',
+      },
+      content: `<main>
+        <nav aria-label="Breadcrumb"><a href="/">Home</a> · <span>Contact Nikas Realty</span></nav>
+        <h1>Contact Nikas Realty</h1>
+        <p>Get in touch with our team to discuss apartments and homes for sale or rent in Nairobi and across Kenya.</p>
+        <address>
+          <p>Phone: <a href="tel:+254710132320">+254 710 132 320</a> or <a href="tel:+254715699774">+254 715 699 774</a></p>
+          <p>Email: <a href="mailto:nikasrealty@gmail.com">nikasrealty@gmail.com</a></p>
+          <p>Office: Westland Arcade, Westlands, Nairobi, Kenya</p>
+        </address>
+        <p>Send our team a message and we will get back to you about your property needs.</p>
+      </main>`,
+    });
 
     writePrerenderedPage('/', {
       title: 'Apartments & Homes for Sale and Rent in Kenya | Nikas Realty',
@@ -396,6 +535,80 @@ export async function generateSitemap() {
       },
       content: `<main><h1>Nikas Realty — Properties in Kenya</h1><nav aria-label="Main navigation"><a href="/projects">Projects</a> · <a href="/sales">Sales</a> · <a href="/rentals">Rentals</a> · <a href="/blog">Blog</a></nav></main>`,
     });
+
+    for (const blog of blogs) {
+      const route = `/blog/${encodeURIComponent(blog.id)}`;
+      const description = makeMetaDescription(blog.summary || blog.content, blog.title, 'Kenya');
+      const paragraphs = String(blog.content || blog.summary || '')
+        .split(/\r?\n/)
+        .map((paragraph) => paragraph.trim())
+        .filter(Boolean)
+        .map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`)
+        .join('\n');
+      writePrerenderedPage(route, {
+        title: `${blog.title} | Nikas Realty Blog`,
+        description,
+        image: asAbsoluteImage(blog.image),
+        type: 'article',
+        structuredData: {
+          '@context': 'https://schema.org',
+          '@type': 'BlogPosting',
+          headline: blog.title,
+          description,
+          image: asAbsoluteImage(blog.image),
+          author: { '@type': 'Person', name: blog.author || 'Nikas Realty' },
+          datePublished: blog.publishedAt ? new Date(blog.publishedAt).toISOString() : undefined,
+          dateModified: blog.updatedAt ? new Date(blog.updatedAt).toISOString() : undefined,
+          publisher: { '@type': 'Organization', name: 'Nikas Realty', url: SITE_URL },
+          mainEntityOfPage: `${SITE_URL}${route}`,
+        },
+        content: `<main>
+          <nav aria-label="Breadcrumb"><a href="/">Home</a> · <a href="/blog">Blog</a> · ${escapeHtml(blog.title)}</nav>
+          <article>
+            ${blog.image ? `<img src="${escapeHtml(asAbsoluteImage(blog.image))}" alt="${escapeHtml(blog.title)}">` : ''}
+            <h1>${escapeHtml(blog.title)}</h1>
+            ${blog.author ? `<p>By ${escapeHtml(blog.author)}</p>` : ''}
+            ${blog.publishedAt ? `<p>Published ${escapeHtml(toDate(blog.publishedAt) || '')}</p>` : ''}
+            ${blog.summary ? `<p>${escapeHtml(blog.summary)}</p>` : ''}
+            ${paragraphs}
+            <p><a href="/blog">Browse more real estate articles</a></p>
+          </article>
+        </main>`,
+      });
+    }
+
+    for (const item of media) {
+      const route = `/media/${encodeURIComponent(item.id)}`;
+      const description = makeMetaDescription(item.description, item.title, item.propertyLocation || 'Kenya');
+      const videoUrl = `https://www.youtube.com/watch?v=${encodeURIComponent(item.youtubeVideoId)}`;
+      writePrerenderedPage(route, {
+        title: `${item.title} | Property Video Tour | Nikas Realty`,
+        description,
+        image: `https://img.youtube.com/vi/${encodeURIComponent(item.youtubeVideoId)}/hqdefault.jpg`,
+        structuredData: {
+          '@context': 'https://schema.org',
+          '@type': 'VideoObject',
+          name: item.title,
+          description,
+          thumbnailUrl: [`https://img.youtube.com/vi/${encodeURIComponent(item.youtubeVideoId)}/hqdefault.jpg`],
+          uploadDate: toDate(item.publishedAt || item.createdAt),
+          embedUrl: `https://www.youtube-nocookie.com/embed/${encodeURIComponent(item.youtubeVideoId)}`,
+          contentUrl: videoUrl,
+          publisher: { '@type': 'Organization', name: 'Nikas Realty', url: SITE_URL },
+        },
+        content: `<main>
+          <nav aria-label="Breadcrumb"><a href="/">Home</a> · <a href="/media">Video Tours</a> · ${escapeHtml(item.title)}</nav>
+          <article>
+            <h1>${escapeHtml(item.title)}</h1>
+            ${item.propertyTitle ? `<p>Property: ${escapeHtml(item.propertyTitle)}</p>` : ''}
+            ${item.propertyLocation ? `<p>Location: ${escapeHtml(item.propertyLocation)}</p>` : ''}
+            ${item.description ? `<p>${escapeHtml(item.description)}</p>` : ''}
+            <p><a href="${escapeHtml(videoUrl)}">Watch ${escapeHtml(item.title)} on YouTube</a></p>
+            <p><a href="/media">Browse more property video tours</a></p>
+          </article>
+        </main>`,
+      });
+    }
 
     for (const project of projects) {
       const route = `/projects/${encodeURIComponent(project.slug)}`;
@@ -558,7 +771,7 @@ export async function generateSitemap() {
   if (fs.existsSync(path.dirname(distSitemap))) {
     fs.writeFileSync(distSitemap, xml, 'utf8');
   }
-  console.log(`Generated sitemap with ${entries.length} URLs and prerendered ${projects.length + sales.length + rentals.length + 4} routes.`);
+  console.log(`Generated sitemap with ${entries.length} URLs and prerendered ${projects.length + sales.length + rentals.length + blogs.length + media.length + 9} routes.`);
 }
 
 export function updateSitemapWithProjects() {

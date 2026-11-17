@@ -1,5 +1,11 @@
 # Force HTTPS and redirect www to non-www
 [[redirects]]
+  from = "/projects/ivy-park-residence"
+  to = "https://nikasrealtors.com/projects/ivy-park-residence-kilimani-1-2-3-bed-apartments-dsq-from-kes-67m"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "https://www.nikasrealtors.com/*"
   to = "https://nikasrealtors.com/:splat"
   status = 301
@@ -63,6 +69,16 @@
 [[redirects]]
   from = "/projects/:slug"
   to = "/projects/:slug/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/:id"
+  to = "/blog/:id/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/media/:id"
+  to = "/media/:id/index.html"
   status = 200
 
 [[redirects]]

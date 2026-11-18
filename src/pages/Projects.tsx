@@ -24,6 +24,10 @@ import {
 } from "lucide-react";
 import { projectsService, type Project } from "@/services/firestore/projects";
 
+const PROJECTS_PAGE_TITLE = "Off-Plan Real Estate Projects in Nairobi | Nikas Realty";
+const PROJECTS_PAGE_DESCRIPTION =
+  "Explore off-plan apartments and new real estate developments in Nairobi. Compare locations, unit types, amenities and prices with Nikas Realty.";
+
 export const ProjectsPage = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,8 +81,8 @@ export const ProjectsPage = () => {
   const projectsJsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "Real Estate Development Projects in Kenya | Nikas Realty",
-    description: "Browse high-end new developments, off-plan residential apartments, and luxury gated communities in Nairobi.",
+    name: PROJECTS_PAGE_TITLE,
+    description: PROJECTS_PAGE_DESCRIPTION,
     url: "https://nikasrealtors.com/projects",
     hasPart: projects.map((p) => ({
       "@type": "RealEstateListing",
@@ -91,8 +95,8 @@ export const ProjectsPage = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <SEO
-        title="New Real Estate Projects & Off-Plan Developments in Kenya | Nikas Realty"
-        description="Discover luxury off-plan apartments, penthouses, and new residential developments for sale in Kilimani, Westlands, Kileleshwa, and Nairobi with Nikas Realty."
+        title={PROJECTS_PAGE_TITLE}
+        description={PROJECTS_PAGE_DESCRIPTION}
         path="/projects"
         keywords="new projects nairobi, off plan apartments kenya, luxury developments nairobi, buy off plan property kenya, nikas realty projects"
         jsonLd={projectsJsonLd}

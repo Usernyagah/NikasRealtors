@@ -4,6 +4,28 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/projects",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(Googlebot|bingbot|WhatsApp|facebookexternalhit).*"
+        }
+      ],
+      "destination": "/api/project-meta"
+    },
+    {
+      "source": "/projects/:slug",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(Googlebot|bingbot|WhatsApp|facebookexternalhit).*"
+        }
+      ],
+      "destination": "/api/project-meta?slug=:slug"
+    },
+    {
       "source": "/projects/:slug",
       "destination": "/projects/:slug/index.html"
     },

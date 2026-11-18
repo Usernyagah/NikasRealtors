@@ -8,6 +8,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 const SITE_URL = 'https://nikasrealtors.com';
+const PROJECTS_PAGE_TITLE = 'Off-Plan Real Estate Projects in Nairobi | Nikas Realty';
+const PROJECTS_PAGE_DESCRIPTION =
+  'Explore off-plan apartments and new real estate developments in Nairobi. Compare locations, unit types, amenities and prices with Nikas Realty.';
 const sitemapPath = path.join(rootDir, 'public', 'sitemap.xml');
 const today = new Date().toISOString().slice(0, 10);
 let htmlTemplate;
@@ -419,7 +422,7 @@ export async function generateSitemap() {
       content: listingContent(title, items),
     });
 
-    makeListingPage('/projects', 'Real Estate Projects in Kenya | Nikas Realty', 'Browse current real estate projects and developments in Kenya.', projectItems);
+    makeListingPage('/projects', PROJECTS_PAGE_TITLE, PROJECTS_PAGE_DESCRIPTION, projectItems);
     makeListingPage(
       '/sales',
       'Apartments & Homes for Sale in Nairobi, Kenya | Nikas Realty',

@@ -82,7 +82,9 @@ If Firestore access requires authentication, configure one of the credentials op
 
 ## Deployment
 
-The repository includes both `vercel.json` and `netlify.toml`. They configure the SPA fallback, prerendered detail-page rewrites, legacy URL redirects, and HTTPS/non-`www` canonical host handling. Production deployments should run `npm run build` so the sitemap and prerendered pages are refreshed from current published content.
+The repository includes both `vercel.json` and `netlify.toml`. Vercel is the primary production host (the scheduled SEO revalidation workflow triggers its deploy hook); both configurations retain the SPA fallback, prerendered detail-page rewrites, legacy URL redirects, and HTTPS/non-`www` canonical host handling. Production deployments should run `npm run build` so the sitemap and prerendered pages are refreshed from current published content.
+
+Vercel also routes Googlebot, bingbot, WhatsApp, and Facebook link-preview requests for `/projects` and `/projects/:slug` through the Edge Function in `api/project-meta.js`. It reads published project records from Firestore and injects route-specific metadata into the deployed HTML shell, so newly published projects can be crawled without waiting for a prerendered page. The function uses the same public Firebase configuration as the client app and requires Firestore read rules to permit the same published-project reads as the public site.
 
 The GitHub Actions workflow `Revalidate SEO pages` triggers a Vercel production deployment daily at 03:17 UTC and supports manual runs. Configure the GitHub Actions secret `VERCEL_DEPLOY_HOOK_URL` with a production Vercel Deploy Hook URL; the workflow reports an error if the secret is missing.
 

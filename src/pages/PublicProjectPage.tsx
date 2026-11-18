@@ -228,11 +228,11 @@ const PublicProjectPage = () => {
       <SEO
         title={seoTitle}
         description={metaDescription}
-        path={`/projects/${project.slug}`}
+        canonicalUrl={canonicalUrl}
         image={project.seo?.socialSharingImage || project.featuredImage || "/logo.png"}
         keywords={project.seo?.focusKeyword || `${project.name}, off-plan apartments ${locationText}, real estate Kenya`}
         noindex={isDraft || publicSeo}
-        jsonLd={structuredData}
+        schemaData={structuredData}
       />
       <Navbar />
       {isDraft && <div className="border-b border-amber-500/30 bg-amber-500/10 px-4 py-2 text-center text-sm text-amber-900 dark:text-amber-200">Admin preview — this project is not published. <Link className="underline" to={`/admin/edit-project/${project.id}`}>Edit project</Link></div>}

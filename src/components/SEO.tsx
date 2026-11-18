@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { SEO_DEFAULTS, absoluteUrl } from "@/config/seo";
 
 type JsonLd = object | object[];
@@ -6,92 +6,69 @@ type JsonLd = object | object[];
 type SEOProps = {
   title: string;
   description: string;
-  path?: string;
+  canonicalUrl?: string;
   image?: string;
+  schemaData?: JsonLd;
+  path?: string;
   type?: "website" | "article";
   keywords?: string;
   noindex?: boolean;
   jsonLd?: JsonLd;
 };
 
-const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
-  const selector = `meta[${attr}="${key}"]`;
-  let el = document.head.querySelector<HTMLMetaElement>(selector);
-  if (!el) {
-    el = document.createElement("meta");
-    el.setAttribute(attr, key);
-    document.head.appendChild(el);
-  }
-  el.setAttribute("content", content);
-};
-
-const upsertLink = (rel: string, href: string) => {
-  let el = document.head.querySelector<HTMLLinkElement>(`link[rel="${rel}"]`);
-  if (!el) {
-    el = document.createElement("link");
-    el.setAttribute("rel", rel);
-    document.head.appendChild(el);
-  }
-  el.setAttribute("href", href);
-};
-
-const JSON_LD_ATTR = "data-nikas-seo-jsonld";
-
-const setJsonLd = (data?: JsonLd) => {
-  document.head.querySelectorAll(`script[${JSON_LD_ATTR}]`).forEach((n) => n.remove());
-  if (!data) return;
-  const payloads = Array.isArray(data) ? data : [data];
-  payloads.forEach((payload) => {
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.setAttribute(JSON_LD_ATTR, "true");
-    script.text = JSON.stringify(payload);
-    document.head.appendChild(script);
-  });
-};
+const toAbsoluteUrl = (url: string) =>
+  url.startsWith("http://") || url.startsWith("https://") ? url : absoluteUrl(url);
 
 const SEO = ({
   title,
   description,
-  path = "/",
+  canonicalUrl,
   image = SEO_DEFAULTS.image,
+  schemaData,
+  path = "/",
   type = "website",
   keywords = SEO_DEFAULTS.keywords,
   noindex = false,
   jsonLd,
 }: SEOProps) => {
-  const jsonLdKey = jsonLd ? JSON.stringify(jsonLd) : "";
+  const url = toAbsoluteUrl(canonicalUrl || path);
+  const imageUrl = toAbsoluteUrl(image);
+  const structuredData = schemaData ?? jsonLd;
+  const payloads = structuredData
+    ? Array.isArray(structuredData) ? structuredData : [structuredData]
+    : [];
+  const robots = noindex ? "noindex, nofollow" : "index, follow";
 
-  useEffect(() => {
-    const url = absoluteUrl(path);
-    const imageUrl = image.startsWith("http") ? image : absoluteUrl(image);
-    const robots = noindex ? "noindex, nofollow" : "index, follow";
+  return (
+    <Helmet>
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      <meta name="keywords" content={keywords} />
+      <meta name="robots" content={robots} />
+      <meta name="googlebot" content={robots} />
+      <link rel="canonical" href={url} />
 
-    document.title = title;
-    upsertMeta("name", "description", description);
-    upsertMeta("name", "keywords", keywords);
-    upsertMeta("name", "robots", robots);
-    upsertMeta("name", "googlebot", robots);
-    upsertLink("canonical", url);
+      <meta property="og:type" content={type} />
+      <meta property="og:url" content={url} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:image" content={imageUrl} />
+      <meta property="og:site_name" content={SEO_DEFAULTS.siteName} />
+      <meta property="og:locale" content={SEO_DEFAULTS.locale} />
 
-    upsertMeta("property", "og:type", type);
-    upsertMeta("property", "og:url", url);
-    upsertMeta("property", "og:title", title);
-    upsertMeta("property", "og:description", description);
-    upsertMeta("property", "og:image", imageUrl);
-    upsertMeta("property", "og:site_name", SEO_DEFAULTS.siteName);
-    upsertMeta("property", "og:locale", SEO_DEFAULTS.locale);
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:url" content={url} />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={imageUrl} />
 
-    upsertMeta("name", "twitter:card", "summary_large_image");
-    upsertMeta("name", "twitter:url", url);
-    upsertMeta("name", "twitter:title", title);
-    upsertMeta("name", "twitter:description", description);
-    upsertMeta("name", "twitter:image", imageUrl);
-
-    setJsonLd(jsonLd);
-  }, [title, description, path, image, type, keywords, noindex, jsonLd, jsonLdKey]);
-
-  return null;
+      {payloads.map((payload, index) => (
+        <script key={index} type="application/ld+json">
+          {JSON.stringify(payload)}
+        </script>
+      ))}
+    </Helmet>
+  );
 };
 
 export default SEO;

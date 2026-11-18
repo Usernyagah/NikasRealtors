@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
+import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "next-themes";
 import "./index.css";
 import { APP_CONFIG, THEME_CONFIG } from "@/config/constants";
@@ -85,7 +86,9 @@ if (import.meta.env.DEV) {
 }
 
 createRoot(document.getElementById("root")!).render(
-  <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-    <App />
-  </ThemeProvider>
+  <HelmetProvider>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+      <App />
+    </ThemeProvider>
+  </HelmetProvider>
 );

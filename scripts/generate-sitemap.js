@@ -7,7 +7,7 @@ import { FIREBASE_CONFIG } from '../src/config/firebase-config.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
-const SITE_URL = 'https://nikasrealtors.com';
+const SITE_URL = 'https://www.nikasrealtors.com';
 const PROJECTS_PAGE_TITLE = 'Off-Plan Real Estate Projects in Nairobi | Nikas Realty';
 const PROJECTS_PAGE_DESCRIPTION =
   'Explore off-plan apartments and new real estate developments in Nairobi. Compare locations, unit types, amenities and prices with Nikas Realty.';

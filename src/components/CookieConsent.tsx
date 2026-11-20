@@ -32,6 +32,7 @@ const CookieConsent = () => {
 
   return (
     <div
+      data-nosnippet=""
       role="dialog"
       aria-live="polite"
       aria-label="Cookie consent"

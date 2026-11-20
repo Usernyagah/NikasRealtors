@@ -119,7 +119,7 @@ const PublicProjectPage = () => {
     (project
       ? `${project.shortDescription} Explore pricing, floor plans, amenities and payment options for ${project.name} in ${project.neighborhood || project.location}.`.slice(0, 160)
       : "The requested real estate development is not available.");
-  const canonicalUrl = `https://nikasrealtors.com/projects/${project?.slug || slug || ""}`;
+  const canonicalUrl = `https://www.nikasrealtors.com/projects/${project?.slug || slug || ""}`;
   const imageUrls = project
     ? [...new Set([project.featuredImage, ...(project.gallery || [])].filter((image): image is string => Boolean(image)))]
     : [];

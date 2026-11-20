@@ -83,11 +83,11 @@ export const ProjectsPage = () => {
     "@type": "CollectionPage",
     name: PROJECTS_PAGE_TITLE,
     description: PROJECTS_PAGE_DESCRIPTION,
-    url: "https://nikasrealtors.com/projects",
+    url: "https://www.nikasrealtors.com/projects",
     hasPart: projects.map((p) => ({
       "@type": "RealEstateListing",
       name: p.name,
-      url: `https://nikasrealtors.com/projects/${p.slug}`,
+      url: `https://www.nikasrealtors.com/projects/${p.slug}`,
       image: p.featuredImage || p.gallery?.[0],
     })),
   };

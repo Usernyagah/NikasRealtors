@@ -1,6 +1,6 @@
 import { APP_CONFIG } from "@/config/constants";
 
-export const SITE_URL = "https://www.nikasrealtors.com";
+export const SITE_URL = "https://nikasrealtors.com";
 
 export const SEO_DEFAULTS = {
   siteName: "Nikas Realty",

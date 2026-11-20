@@ -16,7 +16,7 @@ const PropertiesPage = () => {
           name: "Apartments and homes for sale in Kenya",
           description:
             "Browse apartments, houses, maisonettes and luxury homes for sale in Nairobi and across Kenya.",
-          url: "https://www.nikasrealtors.com/sales",
+          url: "https://nikasrealtors.com/sales",
         }}
       />
       <Navbar />

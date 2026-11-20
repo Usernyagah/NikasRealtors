@@ -14,7 +14,7 @@ const AboutPage = () => {
           "@context": "https://schema.org",
           "@type": "AboutPage",
           name: "About Nikas Realty",
-          url: "https://www.nikasrealtors.com/about",
+          url: "https://nikasrealtors.com/about",
           description:
             "Nikas Realty helps clients find apartments, houses and luxury homes for sale and rent in Nairobi, Kenya.",
         }}

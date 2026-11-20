@@ -1,6 +1,6 @@
 import { FIREBASE_CONFIG } from "../src/config/firebase-config.js";
 
-const SITE_URL = "https://www.nikasrealtors.com";
+const SITE_URL = "https://nikasrealtors.com";
 const PROJECTS_TITLE = "Real Estate Projects in Kenya | Nikas Realty";
 const PROJECTS_DESCRIPTION = "Browse current real estate projects and developments in Kenya.";
 const BOT_USER_AGENT = /(Googlebot|bingbot|WhatsApp|facebookexternalhit)/i;

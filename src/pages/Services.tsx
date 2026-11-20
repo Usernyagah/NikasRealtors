@@ -14,7 +14,7 @@ const ServicesPage = () => {
           "@context": "https://schema.org",
           "@type": "CollectionPage",
           name: "Real estate services in Nairobi",
-          url: "https://www.nikasrealtors.com/services",
+          url: "https://nikasrealtors.com/services",
           description:
             "Home purchase consultation, investment guidance, valuation, legal support and mortgage assistance from Nikas Realty.",
         }}
